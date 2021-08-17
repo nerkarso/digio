@@ -1,0 +1,19 @@
+{
+  "name": "Digio",
+  "short_name": "Digio",
+  "description": "Listen to your favorite Surinamese radio stations from anywhere",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#fc2c54",
+  "background_color": "#fc2c54",
+  "icons": [
+    {
+      "src": "img/icons/icon-192x192.png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "img/icons/icon-512x512.png",
+      "sizes": "512x512"
+    }
+  ]
+}

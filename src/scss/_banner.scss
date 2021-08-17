@@ -1,0 +1,30 @@
+.banner {
+  background: rgba(var(--background-rgb-color), 0.7);
+  border-radius: $radius-medium;
+  box-shadow: 0 0 7px 3px rgba(var(--shadow-rgb-color), 0.2);
+  position: fixed;
+  padding: 15px;
+  height: 60px;
+  width: 100%;
+  max-width: $shell-width;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+@media screen and (max-width: $breakpoint-mobile) {
+  .banner {
+    bottom: 55px;
+  }
+}
+
+@media screen and (max-height: $breakpoint-mobile) {
+  .banner {
+    display: none !important;
+  }
+}

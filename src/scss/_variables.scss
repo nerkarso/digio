@@ -1,0 +1,20 @@
+$cyan: #19deea;
+$pink: #ff2f56;
+$purple: #9c4feb;
+
+$primary-color: $pink;
+$secondary-color: $cyan;
+$tertiary-color: $purple;
+$dark-color: #0d111d;
+$light-color: #ffffff;
+
+$dark-rgb-color: get-rgb($dark-color);
+$light-rgb-color: get-rgb($light-color);
+
+$shell-width: 320px;
+$shell-height: 480px;
+
+$radius-medium: 8px;
+$radius-large: 16px;
+
+$breakpoint-mobile: 480px;

@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "serve": "cd dist && serve -p 8000",
+    "watch": "gulp watch",
+    "build": "gulp build",
+    "upload": "gulp upload"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-uglify": "^3.0.2",
+    "serve": "^12.0.0"
+  }
+}

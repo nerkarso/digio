@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Digio</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Digio" />
+    <meta property="og:description" content="Listen to your favorite Surinamese radio stations from anywhere" />
+    <meta property="og:image" content="https://digio.vercel.app/img/og-image.jpg" />
+    <meta name="application-name" content="Digio" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Digio" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="theme-color" content="#fc2c54" />
+    <link rel="manifest" href="manifest.json" />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="img/icons/apple-touch-icon-152x152.png"
+    />
+    <link rel="icon" sizes="48x48" href="img/icons/icon-48x48.png" />
+    <link rel="stylesheet" href="css/main.min.css" />
+  </head>
+
+  <body>
+    <div class="shell">
+      <div class="views">
+        <section id="ViewPlayer" class="view">
+          <div class="view__content">
+            <div class="player">
+              <div class="player__image">
+                <img src="" class="image" alt="" />
+              </div>
+              <div class="player__content">
+                <h2 class="player__title title"></h2>
+                <p id="AudioStatus" class="player__status">00:00:00</p>
+              </div>
+              <div class="player__controls">
+                <button
+                  id="ButtonToggleAudio"
+                  class="button button--round"
+                ></button>
+              </div>
+              <div class="player__switch">
+                <button id="ButtonToStations" class="button button--block">
+                  Stations
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="ViewStations" class="view">
+          <header class="view__header">
+            <h2>Stations</h2>
+            <button id="ButtonToPlayer" class="button button--primary">
+              Done
+            </button>
+          </header>
+          <div class="view__content">
+            <ul id="Stations" class="list"></ul>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="Install" class="banner">
+      <p>Install app</p>
+      <button id="ButtonInstall" class="button button--primary">Install</button>
+    </div>
+
+    <template id="ListItem">
+      <li class="list__item">
+        <img src="" class="list__item__image image" alt="" />
+        <p class="list__item__title title"></p>
+      </li>
+    </template>
+
+    <template id="IconPlay">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M1.5.1C1 .4 1-.3 1 12s0 11.6.5 11.9c.6.3.4.4 11-5.5C23.4 12.4 23 12.7 23 12c0-.7.4-.4-10.5-6.4C1.8-.4 2.1-.2 1.5 0"
+        />
+      </svg>
+    </template>
+
+    <template id="IconPause">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M3.945.066c-.65.163-1.22.65-1.545 1.302-.163.325-.163.732-.163 10.658 0 11.471-.081 10.576.57 11.309.488.57.894.65 2.359.65 2.115.082 2.847-.162 3.336-1.22l.244-.488V1.775l-.244-.489A1.772 1.772 0 007.037.147C6.55-.015 4.352-.015 3.945.066M16.8.147c-.57.163-1.057.57-1.302 1.14l-.244.488v20.502l.244.488c.489 1.058 1.22 1.302 3.336 1.22 1.465 0 1.871-.08 2.36-.65.65-.733.57.162.57-11.31V1.694l-.164-.407A3.284 3.284 0 0020.543.23c-.488-.244-3.01-.326-3.743-.082"
+        />
+      </svg>
+    </template>
+
+    <script src="js/main.min.js"></script>
+  </body>
+</html>

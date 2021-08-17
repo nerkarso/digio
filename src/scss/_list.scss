@@ -1,0 +1,31 @@
+.list {
+  margin: 0;
+  padding: 0;
+}
+
+.list__item {
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  column-gap: 15px;
+  align-items: center;
+  padding: 5px 15px;
+
+  &:hover {
+    background: var(--list-item-hover-color);
+  }
+
+  &:active {
+    background: var(--list-item-active-color);
+  }
+}
+
+.list__item__image {
+  background: $light-color;
+  border-radius: $radius-medium;
+  max-width: 100%;
+}
+
+.list__item__title {
+  color: var(--text-color);
+}

@@ -1,0 +1,20 @@
+$background-color: mix($dark-color, $light-color, 95%);
+
+:root {
+  --primary-color: #{$primary-color};
+  --primary-lighter-color: #{mix($primary-color, $light-color, 80%)};
+  --primary-darker-color: #{mix($primary-color, $dark-color, 80%)};
+  --primary-text-color: #{$light-color};
+  --secondary-color: #{$secondary-color};
+  --tertiary-color: #{$tertiary-color};
+
+  --background-color: #{$background-color};
+  --background-rgb-color: #{get-rgb($background-color)};
+  --text-color: #{$light-color};
+  --text-rgb-color: #{get-rgb($light-color)};
+  --shadow-rgb-color: #{$dark-rgb-color};
+
+  --dialog-color: #{mix($background-color, $light-color, 90%)};
+  --list-item-hover-color: rgba(#{$light-rgb-color}, 0.1);
+  --list-item-active-color: rgba(#{$light-rgb-color}, 0.2);
+}
