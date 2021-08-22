@@ -1,32 +1,33 @@
 const App = {
   audio: new Audio(),
   isPlaying: false,
+  stationsUpdated: '2021-08-23',
   stations: [
     {
       id: 0,
-      title: 'Beat FM',
-      image: 'img/stations/beatfm.jpg',
-      url: 'http://168.195.218.193:8000/radio2-2'
+      title: 'Radio 10',
+      image: 'img/stations/radio10.jpg',
+      url: 'https://streams.radio.co/s28bc986cd/listen',
+      urlAlt1: 'https://streams.radio.co/s28bc986cd/low',
+      urlAlt2: 'http://168.195.218.193:8000/radio1-2',
     },
     {
       id: 1,
       title: 'NIO FM',
       image: 'img/stations/nio.jpg',
-      url: 'http://bombelman.com:3062/stream?icy=http'
+      url: 'https://ngxproxy.herokuapp.com/http://bombelman.com:3062/stream?icy=http'
     },
     {
       id: 2,
-      title: 'Radio 10',
-      image: 'img/stations/radio10.jpg',
-      url: 'http://streams.radio.co/s28bc986cd/listen',
-      urlAlt1: 'http://168.195.218.193:8000/radio1-2',
-      urlAlt2: 'http://streams.radio.co/s28bc986cd/low',
+      title: 'Beat FM',
+      image: 'img/stations/beatfm.jpg',
+      url: 'https://ngxproxy.herokuapp.com/http://168.195.218.193:8000/radio2-2'
     },
     {
       id: 3,
       title: 'Radio Garuda',
       image: 'img/stations/garuda.jpg',
-      url: 'http://162.244.80.245:8012/;'
+      url: 'https://ngxproxy.herokuapp.com/http://162.244.80.245:8012/;'
     }
   ],
   init: function() {
@@ -126,9 +127,19 @@ const App = {
     }
   },
   loadStations: function() {
-    const storage = localStorage.getItem('stations');
-    if (storage) {
-      this.stations = JSON.parse(storage);
+    const stationsUpdated = localStorage.getItem('stations-updated');
+    if (!stationsUpdated) {
+      localStorage.setItem('stations-updated', JSON.stringify(this.stationsUpdated));
+    } else {
+      if (this.stationsUpdated !== JSON.parse(stationsUpdated)) {
+        localStorage.setItem('stations-updated', JSON.stringify(this.stationsUpdated));
+        localStorage.removeItem('stations');
+      }
+    }
+    
+    const stations = localStorage.getItem('stations');
+    if (stations) {
+      this.stations = JSON.parse(stations);
     } else {
       localStorage.setItem('stations', JSON.stringify(this.stations));
     }
