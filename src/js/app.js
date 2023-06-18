@@ -1,34 +1,32 @@
 const App = {
   audio: new Audio(),
   isPlaying: false,
-  stationsUpdated: '2021-08-23',
+  stationsUpdated: '2023-06-18',
   stations: [
     {
       id: 0,
       title: 'Radio 10',
       image: 'img/stations/radio10.jpg',
-      url: 'https://streams.radio.co/s28bc986cd/listen',
-      urlAlt1: 'https://streams.radio.co/s28bc986cd/low',
-      urlAlt2: 'http://168.195.218.193:8000/radio1-2',
+      url: 'https://s5.radio.co/s85a633f73/listen',
     },
     {
       id: 1,
       title: 'NIO FM',
       image: 'img/stations/nio.jpg',
-      url: 'https://ngxproxy.herokuapp.com/http://bombelman.com:3062/stream?icy=http'
+      url: 'https://surilive.com:8010/;',
     },
     {
       id: 2,
       title: 'Beat FM',
       image: 'img/stations/beatfm.jpg',
-      url: 'https://ngxproxy.herokuapp.com/http://168.195.218.193:8000/radio2-2'
+      url: 'https://audio-edge-cmc51.fra.h.radiomast.io/a263a766-cea5-49e2-87c7-b2e9c9f5740c',
     },
     {
       id: 3,
       title: 'Radio Garuda',
       image: 'img/stations/garuda.jpg',
-      url: 'https://ngxproxy.herokuapp.com/http://162.244.80.245:8012/;'
-    }
+      url: 'https://ngxproxy.onrender.com/http://162.244.80.245:8012/stream',
+    },
   ],
   init: function() {
     this.cacheDom();
