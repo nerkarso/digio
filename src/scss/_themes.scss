@@ -1,5 +1,6 @@
-@import "theme-light";
+@use "sass:meta";
+@use "theme-light";
 
 @media (prefers-color-scheme: dark) {
-  @import "theme-dark";
+  @include meta.load-css("theme-dark");
 }

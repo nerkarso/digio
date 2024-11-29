@@ -4,7 +4,7 @@ const concat = require('gulp-concat');
 const del = require('del');
 const gulp = require('gulp');
 const rename = require('gulp-rename');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const uglify = require('gulp-uglify');
 
 const filesToCopy = ['src/*.*', 'src/img/**/*'];
@@ -49,7 +49,7 @@ function clean() {
 }
 
 function copy() {
-  return gulp.src(filesToCopy, { base: 'src' }).pipe(gulp.dest('dist'));
+  return gulp.src(filesToCopy, { base: 'src', encoding: false }).pipe(gulp.dest('dist'));
 }
 
 function watching(cb) {

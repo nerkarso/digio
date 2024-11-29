@@ -1,3 +1,5 @@
+@use "variables";
+
 .shell {
   background: rgba(var(--background-rgb-color), 0.6);
   box-shadow: 0 0 7px 3px rgba(var(--shadow-rgb-color), 0.2);
@@ -8,16 +10,16 @@
   backdrop-filter: saturate(180%);
 }
 
-@media screen and (min-width: $breakpoint-mobile) {
+@media screen and (min-width: variables.$breakpoint-mobile) {
   .shell {
     background: rgba(var(--background-rgb-color), 0.8);
-    border-radius: $radius-large;
-    max-width: $shell-width;
-    max-height: $shell-height;
+    border-radius: variables.$radius-large;
+    max-width: variables.$shell-width;
+    max-height: variables.$shell-height;
   }
 }
 
-@media screen and (max-height: $breakpoint-mobile) {
+@media screen and (max-height: variables.$breakpoint-mobile) {
   .shell {
     border-radius: 0;
     max-width: 100%;

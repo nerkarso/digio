@@ -1,20 +1,24 @@
-$background-color: mix($dark-color, $light-color, 95%);
+@use "sass:color";
+@use "functions";
+@use "variables";
+
+$background-color: color.mix(variables.$dark-color, variables.$light-color, 95%);
 
 :root {
-  --primary-color: #{$primary-color};
-  --primary-lighter-color: #{mix($primary-color, $light-color, 80%)};
-  --primary-darker-color: #{mix($primary-color, $dark-color, 80%)};
-  --primary-text-color: #{$light-color};
-  --secondary-color: #{$secondary-color};
-  --tertiary-color: #{$tertiary-color};
+  --primary-color: #{variables.$primary-color};
+  --primary-lighter-color: #{color.mix(variables.$primary-color, variables.$light-color, 80%)};
+  --primary-darker-color: #{color.mix(variables.$primary-color, variables.$dark-color, 80%)};
+  --primary-text-color: #{variables.$light-color};
+  --secondary-color: #{variables.$secondary-color};
+  --tertiary-color: #{variables.$tertiary-color};
 
   --background-color: #{$background-color};
-  --background-rgb-color: #{get-rgb($background-color)};
-  --text-color: #{$light-color};
-  --text-rgb-color: #{get-rgb($light-color)};
-  --shadow-rgb-color: #{$dark-rgb-color};
+  --background-rgb-color: #{functions.get-rgb($background-color)};
+  --text-color: #{variables.$light-color};
+  --text-rgb-color: #{functions.get-rgb(variables.$light-color)};
+  --shadow-rgb-color: #{variables.$dark-rgb-color};
 
-  --dialog-color: #{mix($background-color, $light-color, 90%)};
-  --list-item-hover-color: rgba(#{$light-rgb-color}, 0.1);
-  --list-item-active-color: rgba(#{$light-rgb-color}, 0.2);
+  --dialog-color: #{color.mix($background-color, variables.$light-color, 90%)};
+  --list-item-hover-color: rgba(#{variables.$light-rgb-color}, 0.1);
+  --list-item-active-color: rgba(#{variables.$light-rgb-color}, 0.2);
 }

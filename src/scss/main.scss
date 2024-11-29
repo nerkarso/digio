@@ -1,11 +1,11 @@
-@import "functions";
-@import "variables";
+@use "functions";
+@use "variables";
 
-@import "themes";
-@import "base";
-@import "shell";
-@import "views";
-@import "list";
-@import "player";
-@import "button";
-@import "banner";
+@use "themes";
+@use "base";
+@use "shell";
+@use "views";
+@use "list";
+@use "player";
+@use "button";
+@use "banner";

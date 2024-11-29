@@ -1,3 +1,5 @@
+@use "sass:color";
+
 @function get-rgb($color) {
-  @return #{red($color)}, #{green($color)}, #{blue($color)};
+  @return #{color.channel($color, "red", $space: rgb)}, #{color.channel($color, "green", $space: rgb)}, #{color.channel($color, "blue", $space: rgb)};
 }

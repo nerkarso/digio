@@ -1,3 +1,5 @@
+@use "variables";
+
 .player {
   display: flex;
   flex-direction: column;
@@ -6,7 +8,7 @@
   height: 100vh;
 }
 
-@media screen and (min-width: $breakpoint-mobile) {
+@media screen and (min-width: variables.$breakpoint-mobile) {
   .player {
     height: 100%;
   }
@@ -19,8 +21,8 @@
   justify-content: center;
 
   .image {
-    background: $light-color;
-    border-radius: $radius-medium;
+    background: variables.$light-color;
+    border-radius: variables.$radius-medium;
     box-shadow: 0 0 6px 3px rgba(var(--shadow-rgb-color), 0.1);
     max-width: 125px;
   }
@@ -50,7 +52,7 @@
   width: 100%;
 }
 
-@media screen and (max-height: $breakpoint-mobile) {
+@media screen and (max-height: variables.$breakpoint-mobile) {
   .player {
     flex-direction: row;
   }

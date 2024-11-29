@@ -1,3 +1,5 @@
+@use "variables";
+
 .list {
   margin: 0;
   padding: 0;
@@ -21,8 +23,8 @@
 }
 
 .list__item__image {
-  background: $light-color;
-  border-radius: $radius-medium;
+  background: variables.$light-color;
+  border-radius: variables.$radius-medium;
   max-width: 100%;
 }
 
