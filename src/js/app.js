@@ -1,7 +1,7 @@
 const App = {
   audio: new Audio(),
   isPlaying: false,
-  stationsUpdated: '2023-06-18',
+  stationsUpdated: '2024-11-28',
   stations: [
     {
       id: 0,
@@ -13,7 +13,7 @@ const App = {
       id: 1,
       title: 'NIO FM',
       image: 'img/stations/nio.jpg',
-      url: 'https://surilive.com:8010/;',
+      url: 'https://niofm.beheerstream.nl:8060/stream?type=http&nocache=71',
     },
     {
       id: 2,
