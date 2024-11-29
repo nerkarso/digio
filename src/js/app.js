@@ -156,7 +156,7 @@ const App = {
   selectStation: function(id) {
     this.setStationId(id);
 
-    this.isPlaying = true;
+    this.isPlaying = false;
     this.toggleAudio();
 
     this.switchView('player');
