@@ -21,10 +21,26 @@
   justify-content: center;
 
   .image {
-    background: variables.$light-color;
+    height: 125px;
+    width: 125px;
+    background-image: var(--image, url("/img/icons/icon-512x512.png"));
+    background-size: cover;
+    background-repeat: no-repeat;
     border-radius: variables.$radius-medium;
-    box-shadow: 0 0 6px 3px rgba(var(--shadow-rgb-color), 0.1);
-    max-width: 125px;
+    position: relative;
+  }
+
+  .image::after {
+    content: "";
+    position: absolute;
+    top: 0.75rem;
+    left: 0;
+    background-image: inherit;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(0.5rem) brightness(125%) saturate(200%) opacity(70%);
+    transform: scale(0.95);
   }
 }
 

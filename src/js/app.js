@@ -6,25 +6,25 @@ const App = {
     {
       id: 0,
       title: 'Radio 10',
-      image: 'img/stations/radio10.jpg',
+      image: '/img/stations/radio10.jpg',
       url: 'https://s5.radio.co/s85a633f73/listen',
     },
     {
       id: 1,
       title: 'NIO FM',
-      image: 'img/stations/nio.jpg',
+      image: '/img/stations/nio.jpg',
       url: 'https://niofm.beheerstream.nl:8060/stream?type=http&nocache=71',
     },
     {
       id: 2,
       title: 'Beat FM',
-      image: 'img/stations/beatfm.jpg',
+      image: '/img/stations/beatfm.jpg',
       url: 'https://audio-edge-cmc51.fra.h.radiomast.io/a263a766-cea5-49e2-87c7-b2e9c9f5740c',
     },
     {
       id: 3,
       title: 'Radio Garuda',
-      image: 'img/stations/garuda.jpg',
+      image: '/img/stations/garuda.jpg',
       url: 'https://ngxproxy.onrender.com/http://162.244.80.245:8012/stream',
     },
   ],
@@ -72,7 +72,7 @@ const App = {
   },
   renderPlayer: function() {
     const station = this.stations[this.getStationId()];
-    this.ViewPlayer.querySelector('.image').src = station.image;
+    this.ViewPlayer.querySelector('.image').style.setProperty('--image', `url('${station.image}')`);
     this.ViewPlayer.querySelector('.title').innerText = station.title;
   },
   renderStations: function() {
