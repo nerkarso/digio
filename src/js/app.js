@@ -2,7 +2,7 @@ const App = {
   appName: 'Digio',
   audio: new Audio(),
   isPlaying: false,
-  stationsUpdated: '2025-04-24',
+  stationsUpdated: '2025-04-25',
   stations: [
     {
       id: 0,
@@ -16,7 +16,7 @@ const App = {
       title: 'NIO FM',
       image: '/img/stations/nio.jpg',
       url: 'https://niofm.beheerstream.nl:8060/stream?type=http&nocache=71',
-      statusUrl: 'https://ngxproxy2.onrender.com/https://tx.bitdynamics.sr/nio/getSong.php',
+      statusUrl: 'https://ngxproxy2.onrender.com/https://niofm.beheerstream.nl:8060/currentsong?sid=1',
     },
     {
       id: 2,
@@ -31,6 +31,13 @@ const App = {
       image: '/img/stations/garuda.jpg',
       url: 'https://ngxproxy2.onrender.com/http://162.244.80.245:8012/stream',
       statusUrl: null,
+    },
+    {
+      id: 4,
+      title: 'Radio Top 40 ',
+      image: '/img/stations/radio-top-40.jpg',
+      url: 'https://cc6.beheerstream.com/proxy/skurebce?mp=/stream',
+      statusUrl: 'https://ngxproxy2.onrender.com/https://www.radiotop40.sr/wp-admin/admin-ajax.php',
     },
   ],
   loadStationStatusTimer: null,
@@ -80,7 +87,7 @@ const App = {
   renderPlayer: function ({ heading, image, title }) {
     this.ViewPlayer.querySelector('.heading').innerText = heading || '';
     this.ViewPlayer.querySelector('.image').style.setProperty('--image', `url('${image}')`);
-    this.ViewPlayer.querySelector('.title').innerText = title;
+    this.ViewPlayer.querySelector('.title').innerHTML = title;
     this.ViewPlayer.querySelector('.title').title = title || '';
   },
   renderStation: function () {
@@ -260,26 +267,24 @@ const App = {
     const station = this.stations[this.getStationId()];
     if (!station?.statusUrl) return;
 
-    const [response, error] = await tryCatch(fetch(station.statusUrl));
+    const [result, error] = await tryCatch(this.fetchStationStatus(station));
 
     if (error) {
       this.clearStationStatusTimer();
     }
 
-    if (response) {
-      const { title, image } = await this.reshapeStationStatus(station, response);
-
+    if (result) {
       this.renderPlayer({
         heading: station.title,
-        image,
-        title,
+        image: result.image || station.image,
+        title: result.title || station.title,
       });
 
       this.setMediaSession({
-        title,
-        artist: station.title,
+        title: result.title || station.title,
+        artist: result.title ? station.title : undefined,
         album: this.appName,
-        image,
+        image: result.image || station.image,
       });
 
       return;
@@ -295,24 +300,37 @@ const App = {
       artist: this.appName,
     });
   },
-  reshapeStationStatus: async function (station, response) {
+  fetchStationStatus: async function (station) {
     switch (station.id) {
       case 0:
-        const [result0] = await tryCatch(response.json());
+        const result0 = await fetch(station.statusUrl).then((res) => res.json());
+        if (!result0) throw new Error('No data');
 
         return {
-          title: result0.current_track?.title,
-          image: result0.current_track?.artwork_url_large,
+          title: result0?.current_track?.title,
+          image: result0?.current_track?.artwork_url_large,
         };
       case 1:
-        const [result1] = await tryCatch(response.text());
+        const result1 = await fetch(station.statusUrl).then((res) => res.text());
+        if (!result1) throw new Error('No data');
 
         return {
           title: result1,
-          image: station.image,
         };
-      default:
-        return {};
+      case 4:
+        const formData4 = new FormData();
+        formData4.set('url', station.url);
+        formData4.set('action', 'radio_player_get_stream_data');
+
+        const result4 = await fetch(station.statusUrl, {
+          method: 'POST',
+          body: formData4,
+        }).then((res) => res.json());
+        if (!result4) throw new Error('No data');
+
+        return {
+          title: result4?.data?.title,
+        };
     }
   },
   startStationStatusTimer: function () {

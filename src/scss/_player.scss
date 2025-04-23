@@ -14,6 +14,14 @@
   }
 }
 
+.player__header {
+  padding-inline: 15px;
+}
+
+.player__heading {
+  margin-bottom: 0;
+}
+
 .player__image {
   flex-grow: 2;
   display: flex;
@@ -49,10 +57,6 @@
   padding-inline: 15px;
   flex-grow: 1;
   text-align: center;
-}
-
-.player__heading {
-  margin-bottom: 0;
 }
 
 .player__title {
