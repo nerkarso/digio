@@ -1,7 +1,8 @@
 const App = {
+  appName: 'Digio',
   audio: new Audio(),
   isPlaying: false,
-  stationsUpdated: '2024-11-28',
+  stationsUpdated: '2025-04-23',
   stations: [
     {
       id: 0,
@@ -203,11 +204,16 @@ const App = {
     }
   },
   playAudio: function () {
-    this.audio.src = this.stations[this.getStationId()].url;
+    const station = this.stations[this.getStationId()];
+
+    this.audio.src = station.url;
     this.audio.play();
     this.ButtonToggleAudio.innerHTML = this.IconPause.innerHTML;
 
-    this.setMediaSession();
+    this.setMediaSession({
+      ...station,
+      artist: this.appName,
+    });
   },
   stopAudio: function () {
     this.audio.src = '';
@@ -224,12 +230,12 @@ const App = {
   openMini: function () {
     window.open(window.location.href, null, 'width=420,height=160');
   },
-  setMediaSession: function () {
-    const { title, image } = this.stations[this.getStationId()];
-
+  setMediaSession: function ({ title, artist, album, image }) {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: title,
+        title,
+        artist,
+        album,
         artwork: [
           {
             src: image,
@@ -266,12 +272,25 @@ const App = {
         image: result.current_track?.artwork_url_large,
         title: result.current_track?.title,
       });
+
+      this.setMediaSession({
+        title: result.current_track?.title,
+        artist: station.title,
+        album: this.appName,
+        image: result.current_track?.artwork_url,
+      });
+
       return;
     }
 
     this.renderPlayer({
-      image: station.image,
       title: station.title,
+      image: station.image,
+    });
+
+    this.setMediaSession({
+      ...station,
+      artist: this.appName,
     });
   },
   startStationStatusTimer: function () {
