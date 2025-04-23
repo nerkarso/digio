@@ -8,36 +8,42 @@ const App = {
       title: 'Radio 10',
       image: '/img/stations/radio10.jpg',
       url: 'https://s5.radio.co/s85a633f73/listen',
+      statusUrl: 'https://public.radio.co/stations/s85a633f73/status',
     },
     {
       id: 1,
       title: 'NIO FM',
       image: '/img/stations/nio.jpg',
       url: 'https://niofm.beheerstream.nl:8060/stream?type=http&nocache=71',
+      statusUrl: null,
     },
     {
       id: 2,
       title: 'Beat FM',
       image: '/img/stations/beatfm.jpg',
       url: 'https://audio-edge-cmc51.fra.h.radiomast.io/a263a766-cea5-49e2-87c7-b2e9c9f5740c',
+      statusUrl: null,
     },
     {
       id: 3,
       title: 'Radio Garuda',
       image: '/img/stations/garuda.jpg',
-      url: 'https://ngxproxy.onrender.com/http://162.244.80.245:8012/stream',
+      url: 'https://ngxproxy2.onrender.com/http://162.244.80.245:8012/stream',
+      statusUrl: null,
     },
   ],
-  init: function() {
+  loadStationStatusTimer: null,
+  init: function () {
     this.cacheDom();
     this.bindEvents();
     this.setAudio();
     this.loadStations();
+    this.startStationStatusTimer();
     this.renderTemplate();
-    this.renderPlayer();
+    this.renderStation();
     this.renderStations();
   },
-  cacheDom: function() {
+  cacheDom: function () {
     // Templates
     this.ListItem = document.querySelector('#ListItem');
     this.IconPlay = document.querySelector('#IconPlay');
@@ -52,7 +58,7 @@ const App = {
     this.ButtonToStations = document.querySelector('#ButtonToStations');
     this.ButtonToPlayer = document.querySelector('#ButtonToPlayer');
   },
-  bindEvents: function() {
+  bindEvents: function () {
     this.Stations.onclick = this.switchStation.bind(this);
     this.ButtonToggleAudio.onclick = this.toggleAudio.bind(this);
     this.ButtonToStations.onclick = this.switchView.bind(this, 'stations');
@@ -67,16 +73,21 @@ const App = {
 
     this.handleMediaSessionActions();
   },
-  renderTemplate: function() {
+  renderTemplate: function () {
     this.ButtonToggleAudio.innerHTML = this.IconPlay.innerHTML;
   },
-  renderPlayer: function() {
-    const station = this.stations[this.getStationId()];
-    this.ViewPlayer.querySelector('.image').style.setProperty('--image', `url('${station.image}')`);
-    this.ViewPlayer.querySelector('.title').innerText = station.title;
+  renderPlayer: function ({ heading, image, title }) {
+    this.ViewPlayer.querySelector('.heading').innerText = heading || '';
+    this.ViewPlayer.querySelector('.image').style.setProperty('--image', `url('${image}')`);
+    this.ViewPlayer.querySelector('.title').innerText = title;
+    this.ViewPlayer.querySelector('.title').title = title || '';
   },
-  renderStations: function() {
-    this.stations.forEach(item => {
+  renderStation: function () {
+    const station = this.stations[this.getStationId()];
+    this.renderPlayer(station);
+  },
+  renderStations: function () {
+    this.stations.forEach((item) => {
       const el = document.importNode(this.ListItem.content, true);
       el.querySelector('li').setAttribute('data-id', item.id);
       el.querySelector('.image').src = item.image;
@@ -84,7 +95,7 @@ const App = {
       this.Stations.appendChild(el);
     });
   },
-  handleKeydown: function(event) {
+  handleKeydown: function (event) {
     switch (event.code) {
       case 'Space':
         event.preventDefault();
@@ -101,20 +112,17 @@ const App = {
         break;
     }
   },
-  handleBuffering: function() {
+  handleBuffering: function () {
     this.AudioStatus.innerText = 'Buffering...';
   },
-  handleError: function() {
+  handleError: function () {
     this.AudioStatus.innerText = '00:00:00';
-    if (
-      this.audio.error &&
-      this.audio.error.message.indexOf('Format error') > -1
-    ) {
+    if (this.audio.error && this.audio.error.message.indexOf('Format error') > -1) {
       this.isPlaying = false;
       this.stopAudio();
     }
   },
-  switchView: function(view) {
+  switchView: function (view) {
     if (view === 'stations') {
       this.ViewPlayer.style.transform = 'translateY(-100%)';
       this.ViewStations.style.transform = 'translateY(-100%)';
@@ -124,7 +132,7 @@ const App = {
       this.ViewStations.style.transform = 'translateY(0%)';
     }
   },
-  loadStations: function() {
+  loadStations: function () {
     const stationsUpdated = localStorage.getItem('stations-updated');
     if (!stationsUpdated) {
       localStorage.setItem('stations-updated', JSON.stringify(this.stationsUpdated));
@@ -134,7 +142,7 @@ const App = {
         localStorage.removeItem('stations');
       }
     }
-    
+
     const stations = localStorage.getItem('stations');
     if (stations) {
       this.stations = JSON.parse(stations);
@@ -142,7 +150,7 @@ const App = {
       localStorage.setItem('stations', JSON.stringify(this.stations));
     }
   },
-  getStationId: function() {
+  getStationId: function () {
     const id = localStorage.getItem('stationId');
     if (id === null) {
       localStorage.setItem('stationId', '0');
@@ -150,24 +158,28 @@ const App = {
     }
     return +id;
   },
-  setStationId: function(id) {
+  setStationId: function (id) {
     localStorage.setItem('stationId', id);
   },
-  selectStation: function(id) {
+  selectStation: function (id) {
+    this.clearStationStatusTimer();
+
     this.setStationId(id);
 
     this.isPlaying = false;
     this.toggleAudio();
 
     this.switchView('player');
-    this.renderPlayer();
+    this.renderStation();
+
+    this.startStationStatusTimer();
   },
-  switchStation: function(event) {
+  switchStation: function (event) {
     const li = event.target.closest('li');
     const id = li.dataset.id;
     this.selectStation(id);
   },
-  scrollStation: function(direction) {
+  scrollStation: function (direction) {
     let currentId = this.getStationId();
     currentId += direction;
 
@@ -176,12 +188,12 @@ const App = {
       this.playAudio();
     }
   },
-  setAudio: function() {
+  setAudio: function () {
     this.audio.src = '';
     this.audio.preload = '';
     this.audio.autoplay = false;
   },
-  toggleAudio: function() {
+  toggleAudio: function () {
     this.isPlaying = !this.isPlaying;
 
     if (this.isPlaying) {
@@ -190,29 +202,29 @@ const App = {
       this.stopAudio();
     }
   },
-  playAudio: function() {
+  playAudio: function () {
     this.audio.src = this.stations[this.getStationId()].url;
     this.audio.play();
     this.ButtonToggleAudio.innerHTML = this.IconPause.innerHTML;
 
     this.setMediaSession();
   },
-  stopAudio: function() {
+  stopAudio: function () {
     this.audio.src = '';
     this.audio.pause();
     this.ButtonToggleAudio.innerHTML = this.IconPlay.innerHTML;
   },
-  updateTime: function() {
+  updateTime: function () {
     const date = new Date(null);
     date.setSeconds(this.audio.currentTime);
     const currentTime = date.toISOString().substr(11, 8);
 
     this.AudioStatus.innerText = currentTime;
   },
-  openMini: function() {
+  openMini: function () {
     window.open(window.location.href, null, 'width=420,height=160');
   },
-  setMediaSession: function() {
+  setMediaSession: function () {
     const { title, image } = this.stations[this.getStationId()];
 
     if ('mediaSession' in navigator) {
@@ -222,13 +234,13 @@ const App = {
           {
             src: image,
             sizes: '145x145',
-            type: 'image/jpg'
-          }
-        ]
+            type: 'image/jpg',
+          },
+        ],
       });
     }
   },
-  handleMediaSessionActions: function() {
+  handleMediaSessionActions: function () {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.setActionHandler('previoustrack', () => {
         this.scrollStation(-1);
@@ -237,7 +249,41 @@ const App = {
         this.scrollStation(1);
       });
     }
-  }
+  },
+  loadStationStatus: async function () {
+    const station = this.stations[this.getStationId()];
+    if (!station?.statusUrl) return;
+
+    const [result, error] = await tryCatch(fetch(station.statusUrl).then((res) => res.json()));
+
+    if (error) {
+      this.clearStationStatusTimer();
+    }
+
+    if (result) {
+      this.renderPlayer({
+        heading: station.title,
+        image: result.current_track?.artwork_url_large,
+        title: result.current_track?.title,
+      });
+      return;
+    }
+
+    this.renderPlayer({
+      image: station.image,
+      title: station.title,
+    });
+  },
+  startStationStatusTimer: function () {
+    this.loadStationStatusTimer = setInterval(() => {
+      this.loadStationStatus();
+    }, 2000);
+  },
+  clearStationStatusTimer: function () {
+    if (this.loadStationStatusTimer) {
+      clearInterval(this.loadStationStatusTimer);
+    }
+  },
 };
 
 App.init();

@@ -1,4 +1,4 @@
-@use "variables";
+@use 'variables';
 
 .player {
   display: flex;
@@ -23,7 +23,7 @@
   .image {
     height: 125px;
     width: 125px;
-    background-image: var(--image, url("/img/icons/icon-512x512.png"));
+    background-image: var(--image, url('/img/icons/icon-512x512.png'));
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: variables.$radius-medium;
@@ -31,7 +31,7 @@
   }
 
   .image::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 0.75rem;
     left: 0;
@@ -46,13 +46,24 @@
 
 .player__content {
   padding-top: 15px;
+  padding-inline: 15px;
   flex-grow: 1;
   text-align: center;
+}
+
+.player__heading {
+  margin-bottom: 0;
 }
 
 .player__title {
   font-size: 1.5rem;
   margin-bottom: -5px;
+  text-wrap: auto;
+  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .player__status {

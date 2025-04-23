@@ -16,13 +16,13 @@ function processCss() {
       sass({
         outputStyle: 'nested',
         precision: 10,
-        includePaths: ['.']
+        includePaths: ['.'],
       })
     )
     .pipe(cleanCss())
     .pipe(
       rename({
-        suffix: '.min'
+        suffix: '.min',
       })
     )
     .pipe(gulp.dest('dist/css'));
@@ -32,10 +32,10 @@ function processJs() {
   return (
     gulp
       // .src(['src/js/sw.js', 'src/js/app.js'])
-      .src(['src/js/app.js'])
+      .src(['src/js/utils.js', 'src/js/app.js'])
       .pipe(
         babel({
-          presets: ['@babel/preset-env']
+          presets: ['@babel/preset-env'],
         })
       )
       .pipe(uglify())
@@ -63,7 +63,7 @@ const destDir = '';
 
 function cleanDir() {
   return del([destDir + '/**/*'], {
-    force: true
+    force: true,
   });
 }
 
@@ -71,11 +71,6 @@ function uploadDir() {
   return gulp.src('dist/**/*').pipe(gulp.dest(destDir));
 }
 
-exports.watch = gulp.series(
-  clean,
-  copy,
-  gulp.parallel(processCss, processJs),
-  watching
-);
+exports.watch = gulp.series(clean, copy, gulp.parallel(processCss, processJs), watching);
 exports.build = gulp.series(clean, copy, gulp.parallel(processCss, processJs));
 exports.upload = gulp.series(cleanDir, uploadDir);

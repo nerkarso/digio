@@ -35,6 +35,8 @@ npm install
 
 ## Development
 
+Run the following two commands in parallel:
+
 **Gulp watches for file changes**
 
 ```sh
