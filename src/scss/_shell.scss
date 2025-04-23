@@ -1,4 +1,4 @@
-@use "variables";
+@use 'variables';
 
 .shell {
   background: rgba(var(--background-rgb-color), 0.6);
@@ -16,6 +16,7 @@
     border-radius: variables.$radius-large;
     max-width: variables.$shell-width;
     max-height: variables.$shell-height;
+    overflow: hidden;
   }
 }
 
