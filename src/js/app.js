@@ -2,7 +2,7 @@ const App = {
   appName: 'Digio',
   audio: new Audio(),
   isPlaying: false,
-  stationsUpdated: '2025-04-23',
+  stationsUpdated: '2025-04-24',
   stations: [
     {
       id: 0,
@@ -16,7 +16,7 @@ const App = {
       title: 'NIO FM',
       image: '/img/stations/nio.jpg',
       url: 'https://niofm.beheerstream.nl:8060/stream?type=http&nocache=71',
-      statusUrl: null,
+      statusUrl: 'https://ngxproxy2.onrender.com/https://tx.bitdynamics.sr/nio/getSong.php',
     },
     {
       id: 2,
@@ -260,24 +260,26 @@ const App = {
     const station = this.stations[this.getStationId()];
     if (!station?.statusUrl) return;
 
-    const [result, error] = await tryCatch(fetch(station.statusUrl).then((res) => res.json()));
+    const [response, error] = await tryCatch(fetch(station.statusUrl));
 
     if (error) {
       this.clearStationStatusTimer();
     }
 
-    if (result) {
+    if (response) {
+      const { title, image } = await this.reshapeStationStatus(station, response);
+
       this.renderPlayer({
         heading: station.title,
-        image: result.current_track?.artwork_url_large,
-        title: result.current_track?.title,
+        image,
+        title,
       });
 
       this.setMediaSession({
-        title: result.current_track?.title,
+        title,
         artist: station.title,
         album: this.appName,
-        image: result.current_track?.artwork_url,
+        image,
       });
 
       return;
@@ -293,10 +295,30 @@ const App = {
       artist: this.appName,
     });
   },
+  reshapeStationStatus: async function (station, response) {
+    switch (station.id) {
+      case 0:
+        const [result0] = await tryCatch(response.json());
+
+        return {
+          title: result0.current_track?.title,
+          image: result0.current_track?.artwork_url_large,
+        };
+      case 1:
+        const [result1] = await tryCatch(response.text());
+
+        return {
+          title: result1,
+          image: station.image,
+        };
+      default:
+        return {};
+    }
+  },
   startStationStatusTimer: function () {
     this.loadStationStatusTimer = setInterval(() => {
       this.loadStationStatus();
-    }, 2000);
+    }, 3000);
   },
   clearStationStatusTimer: function () {
     if (this.loadStationStatusTimer) {
