@@ -280,6 +280,8 @@ const App = {
         title: result.title || station.title,
       });
 
+      this.setDocumentTitle(result.title);
+
       this.setMediaSession({
         title: result.title || station.title,
         artist: result.title ? station.title : undefined,
@@ -294,6 +296,8 @@ const App = {
       title: station.title,
       image: station.image,
     });
+
+    this.setDocumentTitle(station.title || this.appName);
 
     this.setMediaSession({
       ...station,
@@ -342,6 +346,9 @@ const App = {
     if (this.loadStationStatusTimer) {
       clearInterval(this.loadStationStatusTimer);
     }
+  },
+  setDocumentTitle: function (title) {
+    document.title = title;
   },
 };
 
