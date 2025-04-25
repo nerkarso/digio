@@ -49,7 +49,7 @@ const App = {
     this.renderTemplate();
     this.renderStation();
     this.renderStations();
-    this.setStationLoading(true);
+    this.renderStationLoading(true);
     this.startStationStatusTimer();
   },
   cacheDom: function () {
