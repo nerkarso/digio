@@ -8,6 +8,34 @@
   height: 100%;
   margin: 0 auto;
   backdrop-filter: saturate(180%);
+  position: relative;
+
+  &.shell--loading {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 4px;
+      width: 100%;
+      background: linear-gradient(90deg, transparent, var(--secondary-color), transparent);
+      background-size: 200% 100%; // Ensure the gradient spans beyond the element
+      background-repeat: no-repeat; // Prevent repeating the gradient
+      animation: loading-beam 2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes loading-beam {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @media screen and (min-width: variables.$breakpoint-mobile) {

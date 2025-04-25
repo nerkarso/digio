@@ -2,7 +2,6 @@ const App = {
   appName: 'Digio',
   audio: new Audio(),
   isPlaying: false,
-  isStationLoading: false,
   stationsUpdated: '2025-04-25',
   stations: [
     {
@@ -47,10 +46,11 @@ const App = {
     this.bindEvents();
     this.setAudio();
     this.loadStations();
-    this.startStationStatusTimer();
     this.renderTemplate();
     this.renderStation();
     this.renderStations();
+    this.setStationLoading(true);
+    this.startStationStatusTimer();
   },
   cacheDom: function () {
     // Templates
@@ -59,6 +59,7 @@ const App = {
     this.IconPause = document.querySelector('#IconPause');
 
     // Elements
+    this.Shell = document.querySelector('#Shell');
     this.ViewPlayer = document.querySelector('#ViewPlayer');
     this.ViewStations = document.querySelector('#ViewStations');
     this.Stations = document.querySelector('#Stations');
@@ -86,14 +87,17 @@ const App = {
     this.ButtonToggleAudio.innerHTML = this.IconPlay.innerHTML;
   },
   renderPlayer: function ({ heading, image, title }) {
-    this.ViewPlayer.querySelector('.heading').innerText = heading || '';
+    this.ViewPlayer.querySelector('.heading').innerText = heading;
     this.ViewPlayer.querySelector('.image').style.setProperty('--image', `url('${image}')`);
     this.ViewPlayer.querySelector('.title').innerHTML = title;
     this.ViewPlayer.querySelector('.title').title = title || '';
   },
   renderStation: function () {
     const station = this.stations[this.getStationId()];
-    this.renderPlayer(station);
+    this.renderPlayer({
+      heading: this.appName,
+      ...station,
+    });
   },
   renderStations: function () {
     this.stations.forEach((item) => {
@@ -174,11 +178,12 @@ const App = {
     this.setStationId(id);
 
     this.isPlaying = false;
-    this.toggleAudio();
+    // this.toggleAudio();
 
     this.clearStationStatusTimer();
-    this.renderStation();
     this.setDocumentTitle(this.appName);
+    this.renderStation();
+    this.renderStationLoading(true);
     this.startStationStatusTimer();
 
     this.switchView('player');
@@ -266,9 +271,14 @@ const App = {
   },
   loadStationStatus: async function () {
     const station = this.stations[this.getStationId()];
-    if (!station?.statusUrl) return;
+    if (!station?.statusUrl) {
+      this.renderStationLoading(false);
+      return;
+    }
 
     const [result, error] = await tryCatch(this.fetchStationStatus(station));
+
+    this.renderStationLoading(false);
 
     if (error) {
       this.clearStationStatusTimer();
@@ -350,6 +360,13 @@ const App = {
   },
   setDocumentTitle: function (title) {
     document.title = title;
+  },
+  renderStationLoading: function (value) {
+    if (value) {
+      this.Shell.classList.add('shell--loading');
+    } else {
+      this.Shell.classList.remove('shell--loading');
+    }
   },
 };
 
