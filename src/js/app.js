@@ -2,6 +2,7 @@ const App = {
   appName: 'Digio',
   audio: new Audio(),
   isPlaying: false,
+  isStationLoading: false,
   stationsUpdated: '2025-04-25',
   stations: [
     {
@@ -170,17 +171,17 @@ const App = {
     localStorage.setItem('stationId', id);
   },
   selectStation: function (id) {
-    this.clearStationStatusTimer();
-
     this.setStationId(id);
 
     this.isPlaying = false;
     this.toggleAudio();
 
-    this.switchView('player');
+    this.clearStationStatusTimer();
     this.renderStation();
-
+    this.setDocumentTitle(this.appName);
     this.startStationStatusTimer();
+
+    this.switchView('player');
   },
   switchStation: function (event) {
     const li = event.target.closest('li');
