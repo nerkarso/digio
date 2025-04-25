@@ -178,7 +178,7 @@ const App = {
     this.setStationId(id);
 
     this.isPlaying = false;
-    // this.toggleAudio();
+    this.toggleAudio();
 
     this.clearStationStatusTimer();
     this.setDocumentTitle(this.appName);
