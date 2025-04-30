@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "dev": "npm run watch & npm run serve",
     "serve": "cd dist && serve -p 8000",
     "watch": "gulp watch",
     "build": "gulp build",

@@ -40,6 +40,7 @@ const App = {
       statusUrl: 'https://ngxproxy2.onrender.com/https://www.radiotop40.sr/wp-admin/admin-ajax.php',
     },
   ],
+  loadStationStatusController: null,
   loadStationStatusTimer: null,
   init: function () {
     this.cacheDom();
@@ -291,7 +292,7 @@ const App = {
         title: result.title || station.title,
       });
 
-      this.setDocumentTitle(result.title);
+      this.setDocumentTitle(result.title || station.title);
 
       this.setMediaSession({
         title: result.title || station.title,
@@ -304,11 +305,12 @@ const App = {
     }
 
     this.renderPlayer({
+      heading: station.title,
       title: station.title,
       image: station.image,
     });
 
-    this.setDocumentTitle(station.title || this.appName);
+    this.setDocumentTitle(station.title);
 
     this.setMediaSession({
       ...station,
@@ -316,9 +318,13 @@ const App = {
     });
   },
   fetchStationStatus: async function (station) {
+    this.loadStationStatusController = new AbortController();
+
     switch (station.id) {
       case 0:
-        const result0 = await fetch(station.statusUrl).then((res) => res.json());
+        const result0 = await fetch(station.statusUrl, {
+          signal: this.loadStationStatusController.signal,
+        }).then((res) => res.json());
         if (!result0) throw new Error('No data');
 
         return {
@@ -326,7 +332,9 @@ const App = {
           image: result0?.current_track?.artwork_url_large,
         };
       case 1:
-        const result1 = await fetch(station.statusUrl).then((res) => res.text());
+        const result1 = await fetch(station.statusUrl, {
+          signal: this.loadStationStatusController.signal,
+        }).then((res) => res.text());
         if (!result1) throw new Error('No data');
 
         return {
@@ -334,17 +342,22 @@ const App = {
         };
       case 4:
         const formData4 = new FormData();
-        formData4.set('url', station.url);
-        formData4.set('action', 'radio_player_get_stream_data');
+        // formData4.set('url', station.url);
+        formData4.set('streams[]', station.url);
+        formData4.set('nonce', '6157940c1b');
+        formData4.set('action', 'radio_player_get_streams_data');
 
         const result4 = await fetch(station.statusUrl, {
           method: 'POST',
           body: formData4,
+          signal: this.loadStationStatusController.signal,
         }).then((res) => res.json());
         if (!result4) throw new Error('No data');
 
+        const data4 = result4?.data?.[station.url];
+
         return {
-          title: result4?.data?.title,
+          title: data4?.title,
         };
     }
   },
@@ -354,6 +367,9 @@ const App = {
     }, 3000);
   },
   clearStationStatusTimer: function () {
+    if (this.loadStationStatusController) {
+      this.loadStationStatusController.abort();
+    }
     if (this.loadStationStatusTimer) {
       clearInterval(this.loadStationStatusTimer);
     }
