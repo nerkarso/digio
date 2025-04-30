@@ -262,6 +262,18 @@ const App = {
   },
   handleMediaSessionActions: function () {
     if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', () => {
+        this.isPlaying = true;
+        this.playAudio();
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        this.isPlaying = false;
+        this.stopAudio();
+      });
+      navigator.mediaSession.setActionHandler('stop', () => {
+        this.isPlaying = false;
+        this.stopAudio();
+      });
       navigator.mediaSession.setActionHandler('previoustrack', () => {
         this.scrollStation(-1);
       });
