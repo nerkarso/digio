@@ -52,6 +52,7 @@ const App = {
     this.renderStations();
     this.renderStationLoading(true);
     this.startStationStatusTimer();
+    this.handleAutoPlay();
   },
   cacheDom: function () {
     // Templates
@@ -134,6 +135,17 @@ const App = {
     if (this.audio.error && this.audio.error.message.indexOf('Format error') > -1) {
       this.isPlaying = false;
       this.stopAudio();
+    }
+  },
+  handleAutoPlay: function () {
+    const searchParams = new URLSearchParams(window.location.search);
+    const autoplay = searchParams.get('autoplay');
+    if (autoplay === 'true') {
+      this.isPlaying = true;
+      this.playAudio().catch(() => {
+        this.isPlaying = false;
+        this.stopAudio();
+      });
     }
   },
   switchView: function (view) {
@@ -221,13 +233,15 @@ const App = {
     const station = this.stations[this.getStationId()];
 
     this.audio.src = station.url;
-    this.audio.play();
+    const playPromise = this.audio.play();
     this.ButtonToggleAudio.innerHTML = this.IconPause.innerHTML;
 
     this.setMediaSession({
       ...station,
       artist: this.appName,
     });
+
+    return playPromise;
   },
   stopAudio: function () {
     this.audio.src = '';
