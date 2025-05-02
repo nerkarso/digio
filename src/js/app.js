@@ -2,7 +2,7 @@ const App = {
   appName: 'Digio',
   audio: new Audio(),
   isPlaying: false,
-  stationsUpdated: '2025-04-25',
+  stationsUpdated: '2025-05-02',
   stations: [
     {
       id: 0,
@@ -34,10 +34,10 @@ const App = {
     },
     {
       id: 4,
-      title: 'Radio Top 40 ',
+      title: 'Radio Top 40',
       image: '/img/stations/radio-top-40.jpg',
       url: 'https://cc6.beheerstream.com/proxy/skurebce?mp=/stream',
-      statusUrl: 'https://ngxproxy2.onrender.com/https://www.radiotop40.sr/wp-admin/admin-ajax.php',
+      statusUrl: 'https://ngxproxy2.onrender.com/https://cc6.beheerstream.com/proxy/skurebce/currentsong?sid=1',
     },
   ],
   loadStationStatusController: null,
@@ -345,45 +345,26 @@ const App = {
   },
   fetchStationStatus: async function (station) {
     this.loadStationStatusController = new AbortController();
+    const fetcher = fetch(station.statusUrl, {
+      signal: this.loadStationStatusController.signal,
+    });
 
     switch (station.id) {
       case 0:
-        const result0 = await fetch(station.statusUrl, {
-          signal: this.loadStationStatusController.signal,
-        }).then((res) => res.json());
+        const result0 = await fetcher.then((res) => res.json());
         if (!result0) throw new Error('No data');
 
         return {
           title: result0?.current_track?.title,
           image: result0?.current_track?.artwork_url_large,
         };
-      case 1:
-        const result1 = await fetch(station.statusUrl, {
-          signal: this.loadStationStatusController.signal,
-        }).then((res) => res.text());
-        if (!result1) throw new Error('No data');
+      default:
+        // Shoutcast
+        const resultText = await fetcher.then((res) => res.text());
+        if (!resultText) throw new Error('No data');
 
         return {
-          title: result1,
-        };
-      case 4:
-        const formData4 = new FormData();
-        // formData4.set('url', station.url);
-        formData4.set('streams[]', station.url);
-        formData4.set('nonce', '6157940c1b');
-        formData4.set('action', 'radio_player_get_streams_data');
-
-        const result4 = await fetch(station.statusUrl, {
-          method: 'POST',
-          body: formData4,
-          signal: this.loadStationStatusController.signal,
-        }).then((res) => res.json());
-        if (!result4) throw new Error('No data');
-
-        const data4 = result4?.data?.[station.url];
-
-        return {
-          title: data4?.title,
+          title: resultText,
         };
     }
   },
