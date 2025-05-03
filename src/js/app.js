@@ -2,7 +2,7 @@ const App = {
   appName: 'Digio',
   audio: new Audio(),
   isPlaying: false,
-  stationsUpdated: '2025-05-02',
+  stationsUpdated: '2025-05-03',
   stations: [
     {
       id: 0,
@@ -16,7 +16,7 @@ const App = {
       title: 'NIO FM',
       image: '/img/stations/nio.jpg',
       url: 'https://niofm.beheerstream.nl:8060/stream?type=http&nocache=71',
-      statusUrl: 'https://ngxproxy2.onrender.com/https://niofm.beheerstream.nl:8060/currentsong?sid=1',
+      statusUrl: 'https://ngxproxy.vercel.app/proxy/https:/niofm.beheerstream.nl:8060/currentsong?sid=1',
     },
     {
       id: 2,
@@ -37,7 +37,7 @@ const App = {
       title: 'Radio Top 40',
       image: '/img/stations/radio-top-40.jpg',
       url: 'https://cc6.beheerstream.com/proxy/skurebce?mp=/stream',
-      statusUrl: 'https://ngxproxy2.onrender.com/https://cc6.beheerstream.com/proxy/skurebce/currentsong?sid=1',
+      statusUrl: 'https://ngxproxy.vercel.app/proxy/https:/cc6.beheerstream.com/proxy/skurebce/currentsong?sid=1',
     },
   ],
   loadStationStatusController: null,
