@@ -194,12 +194,15 @@ const App = {
     this.toggleAudio();
 
     this.clearStationStatusTimer();
-    this.setDocumentTitle(this.appName);
-    this.renderStation();
-    this.renderStationLoading(true);
-    this.startStationStatusTimer();
 
-    this.switchView('player');
+    setTimeout(() => {
+      this.setDocumentTitle(this.appName);
+      this.renderStation();
+      this.renderStationLoading(true);
+      this.startStationStatusTimer();
+
+      this.switchView('player');
+    }, 500);
   },
   switchStation: function (event) {
     const li = event.target.closest('li');
