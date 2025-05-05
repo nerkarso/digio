@@ -348,8 +348,11 @@ const App = {
   },
   fetchStationStatus: async function (station) {
     this.loadStationStatusController = new AbortController();
+    const timeoutSignal = AbortSignal.timeout(3000);
+    const combinedSignal = AbortSignal.any([this.loadStationStatusController.signal, timeoutSignal]);
+
     const fetcher = fetch(station.statusUrl, {
-      signal: this.loadStationStatusController.signal,
+      signal: combinedSignal,
     });
 
     switch (station.id) {
