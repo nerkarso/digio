@@ -302,6 +302,7 @@ const App = {
   loadStationStatus: async function () {
     const station = this.stations[this.getStationId()];
     if (!station?.statusUrl) {
+      this.clearStationStatusTimer();
       this.renderStationLoading(false);
       return;
     }
@@ -309,10 +310,6 @@ const App = {
     const [result, error] = await tryCatch(this.fetchStationStatus(station));
 
     this.renderStationLoading(false);
-
-    if (error) {
-      this.clearStationStatusTimer();
-    }
 
     if (result) {
       this.renderPlayer({
@@ -351,9 +348,7 @@ const App = {
     const timeoutSignal = AbortSignal.timeout(3000);
     const combinedSignal = AbortSignal.any([this.loadStationStatusController.signal, timeoutSignal]);
 
-    const fetcher = fetch(station.statusUrl, {
-      signal: combinedSignal,
-    });
+    const fetcher = fetch(station.statusUrl, { signal: combinedSignal });
 
     switch (station.id) {
       case 0:
