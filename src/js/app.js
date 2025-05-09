@@ -59,6 +59,7 @@ const App = {
     this.ListItem = document.querySelector('#ListItem');
     this.IconPlay = document.querySelector('#IconPlay');
     this.IconPause = document.querySelector('#IconPause');
+    this.IconYouTube = document.querySelector('#IconYouTube');
 
     // Elements
     this.Shell = document.querySelector('#Shell');
@@ -69,12 +70,14 @@ const App = {
     this.ButtonToggleAudio = document.querySelector('#ButtonToggleAudio');
     this.ButtonToStations = document.querySelector('#ButtonToStations');
     this.ButtonToPlayer = document.querySelector('#ButtonToPlayer');
+    this.ButtonSearchYouTube = document.querySelector('#ButtonSearchYouTube');
   },
   bindEvents: function () {
     this.Stations.onclick = this.switchStation.bind(this);
     this.ButtonToggleAudio.onclick = this.toggleAudio.bind(this);
     this.ButtonToStations.onclick = this.switchView.bind(this, 'stations');
     this.ButtonToPlayer.onclick = this.switchView.bind(this, 'player');
+    this.ButtonSearchYouTube.onclick = this.searchYouTube.bind(this);
 
     this.audio.ontimeupdate = this.updateTime.bind(this);
     this.audio.onloadstart = this.handleBuffering.bind(this);
@@ -87,6 +90,7 @@ const App = {
   },
   renderTemplate: function () {
     this.ButtonToggleAudio.innerHTML = this.IconPlay.innerHTML;
+    this.ButtonSearchYouTube.innerHTML = this.IconYouTube.innerHTML;
   },
   renderPlayer: function ({ heading, image, title }) {
     this.ViewPlayer.querySelector('.heading').innerText = heading;
@@ -391,6 +395,12 @@ const App = {
     } else {
       this.Shell.classList.remove('shell--loading');
     }
+  },
+  searchYouTube: function () {
+    const q = encodeURIComponent(this.ViewPlayer.querySelector('.title').textContent);
+    if (!q) return;
+    const url = `https://www.youtube.com/results?search_query=${q}`;
+    window.open(url, '_blank');
   },
 };
 

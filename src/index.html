@@ -37,7 +37,9 @@
                 <p id="AudioStatus" class="player__status">00:00:00</p>
               </div>
               <div class="player__controls">
-                <button id="ButtonToggleAudio" class="button button--round"></button>
+                <span></span>
+                <button id="ButtonToggleAudio" class="button button--round" title="Play/Pause"></button>
+                <button id="ButtonSearchYouTube" class="button button--round" title="Search song on YouTube"></button>
               </div>
               <div class="player__switch">
                 <button id="ButtonToStations" class="button button--block">Stations</button>
@@ -83,6 +85,14 @@
         <path
           fill-rule="evenodd"
           d="M3.945.066c-.65.163-1.22.65-1.545 1.302-.163.325-.163.732-.163 10.658 0 11.471-.081 10.576.57 11.309.488.57.894.65 2.359.65 2.115.082 2.847-.162 3.336-1.22l.244-.488V1.775l-.244-.489A1.772 1.772 0 007.037.147C6.55-.015 4.352-.015 3.945.066M16.8.147c-.57.163-1.057.57-1.302 1.14l-.244.488v20.502l.244.488c.489 1.058 1.22 1.302 3.336 1.22 1.465 0 1.871-.08 2.36-.65.65-.733.57.162.57-11.31V1.694l-.164-.407A3.284 3.284 0 0020.543.23c-.488-.244-3.01-.326-3.743-.082"
+        />
+      </svg>
+    </template>
+
+    <template id="IconYouTube">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+        <path
+          d="m10 15l5.19-3L10 9zm11.56-7.83c.13.47.22 1.1.28 1.9c.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83c-.25.9-.83 1.48-1.73 1.73c-.47.13-1.33.22-2.65.28c-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44c-.9-.25-1.48-.83-1.73-1.73c-.13-.47-.22-1.1-.28-1.9c-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83c.25-.9.83-1.48 1.73-1.73c.47-.13 1.33-.22 2.65-.28c1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44c.9.25 1.48.83 1.73 1.73"
         />
       </svg>
     </template>
