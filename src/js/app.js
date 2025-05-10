@@ -536,7 +536,7 @@ const App = {
     cursorRequest.onsuccess = (event) => {
       const cursor = event.target.result;
       // If there's no last item means the history is empty
-      if (!(cursor.value?.title === title && cursor.value?.station_id === stationId)) {
+      if (!cursor || !(cursor?.value?.title === title && cursor?.value?.station_id === stationId)) {
         store.add({
           title: title,
           image: image,
