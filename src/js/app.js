@@ -1,6 +1,9 @@
 const App = {
   appName: 'Digio',
   audio: new Audio(),
+  db: null,
+  dbRequest: null,
+  dbVersion: 1,
   isPlaying: false,
   stationsUpdated: '2025-05-04',
   stations: [
@@ -42,7 +45,10 @@ const App = {
   ],
   loadStationStatusController: null,
   loadStationStatusTimer: null,
+  stationHistoryRendererTimer: null,
+  stationHistoryRendererSet: new Set(),
   init: function () {
+    this.dbInit();
     this.cacheDom();
     this.bindEvents();
     this.setAudio();
@@ -51,6 +57,7 @@ const App = {
     this.renderStation();
     this.renderStations();
     this.renderStationLoading(true);
+    this.renderStationHistoryEmptyItem();
     this.startStationStatusTimer();
     this.handleAutoPlay();
   },
@@ -60,24 +67,32 @@ const App = {
     this.IconPlay = document.querySelector('#IconPlay');
     this.IconPause = document.querySelector('#IconPause');
     this.IconYouTube = document.querySelector('#IconYouTube');
+    this.IconHistory = document.querySelector('#IconHistory');
 
     // Elements
     this.Shell = document.querySelector('#Shell');
     this.ViewPlayer = document.querySelector('#ViewPlayer');
     this.ViewStations = document.querySelector('#ViewStations');
+    this.ViewStationHistory = document.querySelector('#ViewStationHistory');
     this.Stations = document.querySelector('#Stations');
+    this.StationHistory = document.querySelector('#StationHistory');
     this.AudioStatus = document.querySelector('#AudioStatus');
     this.ButtonToggleAudio = document.querySelector('#ButtonToggleAudio');
     this.ButtonToStations = document.querySelector('#ButtonToStations');
-    this.ButtonToPlayer = document.querySelector('#ButtonToPlayer');
+    this.ButtonToPlayer = document.querySelectorAll('.ButtonToPlayer');
+    this.ButtonToStationHistory = document.querySelector('#ButtonToStationHistory');
     this.ButtonSearchYouTube = document.querySelector('#ButtonSearchYouTube');
   },
   bindEvents: function () {
     this.Stations.onclick = this.switchStation.bind(this);
+    this.StationHistory.onclick = this.searchYouTube.bind(this, 'history');
     this.ButtonToggleAudio.onclick = this.toggleAudio.bind(this);
     this.ButtonToStations.onclick = this.switchView.bind(this, 'stations');
-    this.ButtonToPlayer.onclick = this.switchView.bind(this, 'player');
-    this.ButtonSearchYouTube.onclick = this.searchYouTube.bind(this);
+    Array.from(this.ButtonToPlayer).forEach((button) => {
+      button.onclick = this.switchView.bind(this, 'player');
+    });
+    this.ButtonToStationHistory.onclick = this.switchView.bind(this, 'stationHistory');
+    this.ButtonSearchYouTube.onclick = this.searchYouTube.bind(this, 'player');
 
     this.audio.ontimeupdate = this.updateTime.bind(this);
     this.audio.onloadstart = this.handleBuffering.bind(this);
@@ -86,14 +101,19 @@ const App = {
 
     document.onkeydown = this.handleKeydown.bind(this);
 
+    this.dbRequest.onerror = this.handleDbError.bind(this);
+    this.dbRequest.onsuccess = this.handleDbSuccess.bind(this);
+    this.dbRequest.onupgradeneeded = this.handleDbUpgrade.bind(this);
+
     this.handleMediaSessionActions();
   },
   renderTemplate: function () {
     this.ButtonToggleAudio.innerHTML = this.IconPlay.innerHTML;
     this.ButtonSearchYouTube.innerHTML = this.IconYouTube.innerHTML;
+    this.ButtonToStationHistory.innerHTML = this.IconHistory.innerHTML;
   },
   renderPlayer: function ({ heading, image, title }) {
-    this.ViewPlayer.querySelector('.heading').innerText = heading;
+    this.ViewPlayer.querySelector('.heading').textContent = heading;
     this.ViewPlayer.querySelector('.image').style.setProperty('--image', `url('${image}')`);
     this.ViewPlayer.querySelector('.title').innerHTML = title;
     this.ViewPlayer.querySelector('.title').title = title || '';
@@ -110,7 +130,8 @@ const App = {
       const el = document.importNode(this.ListItem.content, true);
       el.querySelector('li').setAttribute('data-id', item.id);
       el.querySelector('.image').src = item.image;
-      el.querySelector('.title').innerText = item.title;
+      el.querySelector('.title').textContent = item.title;
+      el.querySelector('.subtitle').remove();
       this.Stations.appendChild(el);
     });
   },
@@ -132,10 +153,10 @@ const App = {
     }
   },
   handleBuffering: function () {
-    this.AudioStatus.innerText = 'Buffering...';
+    this.AudioStatus.textContent = 'Buffering...';
   },
   handleError: function () {
-    this.AudioStatus.innerText = '00:00:00';
+    this.AudioStatus.textContent = '00:00:00';
     if (this.audio.error && this.audio.error.message.indexOf('Format error') > -1) {
       this.isPlaying = false;
       this.stopAudio();
@@ -153,13 +174,18 @@ const App = {
     }
   },
   switchView: function (view) {
+    if (view === 'player') {
+      this.ViewPlayer.style.transform = 'translateY(0%)';
+      this.ViewStations.style.transform = 'translateY(0%)';
+      this.ViewStationHistory.style.transform = 'translateY(0%)';
+    }
     if (view === 'stations') {
       this.ViewPlayer.style.transform = 'translateY(-100%)';
       this.ViewStations.style.transform = 'translateY(-100%)';
     }
-    if (view === 'player') {
-      this.ViewPlayer.style.transform = 'translateY(0%)';
-      this.ViewStations.style.transform = 'translateY(0%)';
+    if (view === 'stationHistory') {
+      this.ViewPlayer.style.transform = 'translateY(-100%)';
+      this.ViewStationHistory.style.transform = 'translateY(-200%)';
     }
   },
   loadStations: function () {
@@ -198,12 +224,15 @@ const App = {
     this.toggleAudio();
 
     this.clearStationStatusTimer();
+    this.clearStationHistoryRendererTimer();
+    this.renderStationHistoryEmptyList();
 
     setTimeout(() => {
       this.setDocumentTitle(this.appName);
       this.renderStation();
       this.renderStationLoading(true);
       this.startStationStatusTimer();
+      this.startStationHistoryRendererTimer();
 
       this.switchView('player');
     }, 500);
@@ -260,7 +289,7 @@ const App = {
     date.setSeconds(this.audio.currentTime);
     const currentTime = date.toISOString().substr(11, 8);
 
-    this.AudioStatus.innerText = currentTime;
+    this.AudioStatus.textContent = currentTime;
   },
   openMini: function () {
     window.open(window.location.href, null, 'width=420,height=160');
@@ -320,6 +349,12 @@ const App = {
         heading: station.title,
         image: result.image || station.image,
         title: result.title || station.title,
+      });
+
+      this.stationHistoryAdd({
+        title: result.title,
+        image: result.image || station.image,
+        stationId: station.id,
       });
 
       this.setDocumentTitle(result.title || station.title);
@@ -396,11 +431,141 @@ const App = {
       this.Shell.classList.remove('shell--loading');
     }
   },
-  searchYouTube: function () {
-    const q = encodeURIComponent(this.ViewPlayer.querySelector('.title').textContent);
+  searchYouTube: function (context, event) {
+    let q;
+
+    switch (context) {
+      case 'player':
+        q = encodeURIComponent(this.ViewPlayer.querySelector('.title').textContent);
+        break;
+      case 'history':
+        const li = event.target.closest('li');
+        // Query is already URI encoded
+        q = li.dataset.query;
+        break;
+    }
+
     if (!q) return;
     const url = `https://www.youtube.com/results?search_query=${q}`;
     window.open(url, '_blank');
+  },
+  renderStationHistoryEmptyList: function () {
+    this.stationHistoryRendererSet = new Set();
+    this.StationHistory.innerHTML = '';
+  },
+  renderStationHistoryEmptyItem: function () {
+    const emptyEl = document.createElement('li');
+    emptyEl.classList.add('list__empty');
+    emptyEl.textContent = 'No history yet';
+    this.StationHistory.appendChild(emptyEl);
+  },
+  renderStationHistory: function () {
+    if (!this.db) return;
+
+    const station = this.stations[this.getStationId()];
+
+    const transaction = this.db.transaction(['station_history'], 'readonly');
+    const store = transaction.objectStore('station_history');
+    const index = store.index('station_id');
+    const keyRange = IDBKeyRange.only(station.id);
+    const cursorRequest = index.openCursor(keyRange, 'next');
+    let cursorCount = 0;
+
+    cursorRequest.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        const item = cursor.value;
+
+        const itemEl = document.importNode(this.ListItem.content, true);
+        itemEl.querySelector('.image').src = item.image;
+        itemEl.querySelector('.title').textContent = item.title;
+        itemEl.querySelector('.title').title = item.title;
+        itemEl.querySelector('.subtitle').textContent = this.formatDate(item.date);
+
+        // We use text content so that HTML entities are parsed
+        const titleContent = itemEl.querySelector('.title').textContent;
+        itemEl.querySelector('li').setAttribute('data-query', encodeURIComponent(titleContent));
+
+        if (!this.stationHistoryRendererSet.has(item.id)) {
+          this.StationHistory.prepend(itemEl);
+          this.stationHistoryRendererSet.add(item.id);
+        }
+
+        cursorCount++;
+        cursor.continue();
+      } else {
+        if (cursorCount === 0) {
+          this.renderStationHistoryEmptyList();
+          this.renderStationHistoryEmptyItem();
+        }
+      }
+    };
+  },
+  dbInit: function () {
+    this.dbRequest = window.indexedDB.open(this.appName.toLowerCase(), this.dbVersion);
+  },
+  handleDbError: function (event) {
+    console.error(event);
+  },
+  handleDbSuccess: function (event) {
+    this.db = event.target.result;
+    // Clear the list
+    this.renderStationHistoryEmptyList();
+    this.renderStationHistory();
+    // We start rendering the history when the database is ready
+    this.startStationHistoryRendererTimer();
+  },
+  handleDbUpgrade: function (event) {
+    const db = event.target.result;
+
+    const stationHistoryStore = db.createObjectStore('station_history', { keyPath: 'id', autoIncrement: true });
+    stationHistoryStore.createIndex('title', 'title', { unique: false });
+    stationHistoryStore.createIndex('image', 'image', { unique: false });
+    stationHistoryStore.createIndex('station_id', 'station_id', { unique: false });
+    stationHistoryStore.createIndex('date', 'date', { unique: false });
+  },
+  stationHistoryAdd: function ({ title, image, stationId }) {
+    if (!this.db || !title) return;
+
+    const transaction = this.db.transaction(['station_history'], 'readwrite');
+    const store = transaction.objectStore('station_history');
+    const index = store.index('station_id');
+    const keyRange = IDBKeyRange.only(stationId);
+    const cursorRequest = index.openCursor(keyRange, 'prev');
+
+    cursorRequest.onsuccess = (event) => {
+      const cursor = event.target.result;
+      // If there's no last item means the history is empty
+      if (!(cursor.value?.title === title && cursor.value?.station_id === stationId)) {
+        store.add({
+          title: title,
+          image: image,
+          station_id: stationId,
+          date: new Date().toISOString(),
+        });
+      }
+    };
+  },
+  startStationHistoryRendererTimer: function () {
+    this.stationHistoryRendererTimer = setInterval(() => {
+      this.renderStationHistory();
+    }, 3000);
+  },
+  clearStationHistoryRendererTimer: function () {
+    if (this.stationHistoryRendererTimer) {
+      clearInterval(this.startStationHistoryRendererTimer);
+    }
+  },
+  formatDate: function (date) {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false,
+    });
+    return formatter.format(new Date(date));
   },
 };
 

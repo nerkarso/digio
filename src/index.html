@@ -37,7 +37,7 @@
                 <p id="AudioStatus" class="player__status">00:00:00</p>
               </div>
               <div class="player__controls">
-                <span></span>
+                <button id="ButtonToStationHistory" class="button button--round" title="Show station history"></button>
                 <button id="ButtonToggleAudio" class="button button--round" title="Play/Pause"></button>
                 <button id="ButtonSearchYouTube" class="button button--round" title="Search song on YouTube"></button>
               </div>
@@ -47,13 +47,22 @@
             </div>
           </div>
         </section>
-        <section id="ViewStations" class="view">
+        <section id="ViewStations" class="view view--dialog">
           <header class="view__header">
             <h2>Stations</h2>
-            <button id="ButtonToPlayer" class="button button--primary">Done</button>
+            <button class="button button--primary ButtonToPlayer">Done</button>
           </header>
           <div class="view__content">
             <ul id="Stations" class="list"></ul>
+          </div>
+        </section>
+        <section id="ViewStationHistory" class="view view--dialog">
+          <header class="view__header">
+            <h2>Station History</h2>
+            <button class="button button--primary ButtonToPlayer">Done</button>
+          </header>
+          <div class="view__content">
+            <ul id="StationHistory" class="list"></ul>
           </div>
         </section>
       </div>
@@ -67,7 +76,10 @@
     <template id="ListItem">
       <li class="list__item">
         <img src="" class="list__item__image image" alt="" />
-        <p class="list__item__title title"></p>
+        <div class="list__item__content">
+          <span class="list__item__title title"></span>
+          <span class="list__item__subtitle subtitle"></span>
+        </div>
       </li>
     </template>
 
@@ -93,6 +105,14 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
         <path
           d="m10 15l5.19-3L10 9zm11.56-7.83c.13.47.22 1.1.28 1.9c.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83c-.25.9-.83 1.48-1.73 1.73c-.47.13-1.33.22-2.65.28c-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44c-.9-.25-1.48-.83-1.73-1.73c-.13-.47-.22-1.1-.28-1.9c-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83c.25-.9.83-1.48 1.73-1.73c.47-.13 1.33-.22 2.65-.28c1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44c.9.25 1.48.83 1.73 1.73"
+        />
+      </svg>
+    </template>
+
+    <template id="IconHistory">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+        <path
+          d="M12 21q-3.15 0-5.58-1.91T3.27 14.2q-.1-.38.15-.69t.68-.36q.4-.05.72.15t.45.6q.6 2.25 2.48 3.67T12 19q2.92 0 4.96-2.04T19 12t-2.04-4.96T12 5q-1.73 0-3.23.8T6.26 8H8q.42 0 .71.29T9 9t-.29.71T8 10H4q-.42 0-.71-.29T3 9V5q0-.42.29-.71T4 4t.71.29T5 5v1.35q1.27-1.6 3.11-2.48T12 3q1.88 0 3.51.71t2.85 1.93 1.93 2.85T21 12t-.71 3.51-1.93 2.85-2.85 1.93T12 21m1-9.4 2.5 2.5q.28.28.28.7t-.28.7-.7.27-.7-.27l-2.8-2.8q-.15-.15-.23-.34t-.07-.38V8q0-.42.29-.71T12 7t.71.29T13 8z"
         />
       </svg>
     </template>

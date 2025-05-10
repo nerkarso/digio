@@ -1,4 +1,4 @@
-@use "variables";
+@use 'variables';
 
 .list {
   margin: 0;
@@ -22,12 +22,37 @@
   }
 }
 
+.list__empty {
+  color: var(--text-color);
+  padding: 10px 15px;
+}
+
 .list__item__image {
   background: variables.$light-color;
   border-radius: variables.$radius-medium;
   max-width: 100%;
 }
 
+.list__item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow: hidden;
+}
+
 .list__item__title {
   color: var(--text-color);
+  font-size: 15px;
+  text-wrap: pretty;
+  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.list__item__subtitle {
+  color: var(--text-color);
+  font-size: 12px;
+  opacity: 0.5;
 }
