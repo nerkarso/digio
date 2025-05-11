@@ -37,9 +37,9 @@
                 <p id="AudioStatus" class="player__status">00:00:00</p>
               </div>
               <div class="player__controls">
-                <button id="ButtonToStationHistory" class="button button--round" title="Show station history"></button>
-                <button id="ButtonToggleAudio" class="button button--round" title="Play/Pause"></button>
                 <button id="ButtonSearchYouTube" class="button button--round" title="Search song on YouTube"></button>
+                <button id="ButtonToggleAudio" class="button button--round" title="Play/Pause"></button>
+                <button id="ButtonToStationHistory" class="button button--round" title="Show station history"></button>
               </div>
               <div class="player__switch">
                 <button id="ButtonToStations" class="button button--block">Stations</button>
@@ -56,16 +56,16 @@
             <ul id="Stations" class="list"></ul>
           </div>
         </section>
-        <section id="ViewStationHistory" class="view view--dialog">
-          <header class="view__header">
-            <h2>Station History</h2>
-            <button class="button button--primary ButtonToPlayer">Done</button>
-          </header>
-          <div class="view__content">
-            <ul id="StationHistory" class="list"></ul>
-          </div>
-        </section>
       </div>
+      <section id="ViewStationHistory" class="view view--dialog sidebar">
+        <header class="view__header">
+          <h2>Station History</h2>
+          <button id="ButtonCloseStationHistory" class="button button--primary">Close</button>
+        </header>
+        <div class="view__content">
+          <ul id="StationHistory" class="list"></ul>
+        </div>
+      </section>
     </div>
 
     <div id="Install" class="banner">

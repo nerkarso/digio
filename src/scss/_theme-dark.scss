@@ -1,6 +1,6 @@
-@use "sass:color";
-@use "functions";
-@use "variables";
+@use 'sass:color';
+@use 'functions';
+@use 'variables';
 
 $background-color: color.mix(variables.$dark-color, variables.$light-color, 95%);
 
@@ -21,4 +21,5 @@ $background-color: color.mix(variables.$dark-color, variables.$light-color, 95%)
   --dialog-color: #{color.mix($background-color, variables.$light-color, 90%)};
   --list-item-hover-color: rgba(#{variables.$light-rgb-color}, 0.1);
   --list-item-active-color: rgba(#{variables.$light-rgb-color}, 0.2);
+  --border-color: rgba(#{variables.$dark-rgb-color}, 0.2);
 }

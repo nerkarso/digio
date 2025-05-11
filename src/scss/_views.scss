@@ -1,7 +1,14 @@
 .views {
+  flex-basis: 100%;
+  flex-shrink: 0;
   height: 100%;
   white-space: nowrap;
   overflow: hidden;
+  transition: flex-shrink 0.3s ease-in-out;
+}
+
+.shell--sidebar-open .views {
+  flex-shrink: 1;
 }
 
 .view {

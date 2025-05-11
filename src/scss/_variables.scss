@@ -13,7 +13,8 @@ $light-color: #ffffff;
 $dark-rgb-color: functions.get-rgb($dark-color);
 $light-rgb-color: functions.get-rgb($light-color);
 
-$shell-width: 320px;
+$shell-min-width: 320px;
+$shell-max-width: 640px;
 $shell-height: 480px;
 
 $radius-medium: 8px;

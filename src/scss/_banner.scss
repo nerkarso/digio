@@ -1,4 +1,4 @@
-@use "variables";
+@use 'variables';
 
 .banner {
   background: rgba(var(--background-rgb-color), 0.7);
@@ -8,7 +8,7 @@
   padding: 15px;
   height: 60px;
   width: 100%;
-  max-width: variables.$shell-width;
+  max-width: variables.$shell-max-width;
   bottom: 15px;
   left: 0;
   right: 0;

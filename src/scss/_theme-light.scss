@@ -1,6 +1,6 @@
-@use "sass:color";
-@use "functions";
-@use "variables";
+@use 'sass:color';
+@use 'functions';
+@use 'variables';
 
 :root {
   --primary-color: #{variables.$primary-color};
@@ -19,4 +19,5 @@
   --dialog-color: #{variables.$light-color};
   --list-item-hover-color: rgba(#{variables.$dark-rgb-color}, 0.1);
   --list-item-active-color: rgba(#{variables.$dark-rgb-color}, 0.2);
+  --border-color: rgba(#{variables.$dark-rgb-color}, 0.1);
 }

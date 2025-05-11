@@ -59,7 +59,7 @@ const App = {
     this.renderStationLoading(true);
     this.renderStationHistoryEmptyItem();
     this.startStationStatusTimer();
-    this.handleAutoPlay();
+    this.urlStateInit();
   },
   cacheDom: function () {
     // Templates
@@ -80,8 +80,9 @@ const App = {
     this.ButtonToggleAudio = document.querySelector('#ButtonToggleAudio');
     this.ButtonToStations = document.querySelector('#ButtonToStations');
     this.ButtonToPlayer = document.querySelectorAll('.ButtonToPlayer');
-    this.ButtonToStationHistory = document.querySelector('#ButtonToStationHistory');
     this.ButtonSearchYouTube = document.querySelector('#ButtonSearchYouTube');
+    this.ButtonToStationHistory = document.querySelector('#ButtonToStationHistory');
+    this.ButtonCloseStationHistory = document.querySelector('#ButtonCloseStationHistory');
   },
   bindEvents: function () {
     this.Stations.onclick = this.switchStation.bind(this);
@@ -92,6 +93,7 @@ const App = {
       button.onclick = this.switchView.bind(this, 'player');
     });
     this.ButtonToStationHistory.onclick = this.switchView.bind(this, 'stationHistory');
+    this.ButtonCloseStationHistory.onclick = this.switchView.bind(this, 'stationHistory');
     this.ButtonSearchYouTube.onclick = this.searchYouTube.bind(this, 'player');
 
     this.audio.ontimeupdate = this.updateTime.bind(this);
@@ -162,9 +164,10 @@ const App = {
       this.stopAudio();
     }
   },
-  handleAutoPlay: function () {
+  urlStateInit: function () {
     const searchParams = new URLSearchParams(window.location.search);
     const autoplay = searchParams.get('autoplay');
+    const sidebar = searchParams.get('sidebar');
     if (autoplay === 'true') {
       this.isPlaying = true;
       this.playAudio().catch(() => {
@@ -172,20 +175,28 @@ const App = {
         this.stopAudio();
       });
     }
+    if (sidebar === 'open') {
+      this.Shell.classList.add('shell--sidebar-open');
+    }
   },
   switchView: function (view) {
     if (view === 'player') {
       this.ViewPlayer.style.transform = 'translateY(0%)';
       this.ViewStations.style.transform = 'translateY(0%)';
-      this.ViewStationHistory.style.transform = 'translateY(0%)';
     }
     if (view === 'stations') {
       this.ViewPlayer.style.transform = 'translateY(-100%)';
       this.ViewStations.style.transform = 'translateY(-100%)';
     }
     if (view === 'stationHistory') {
-      this.ViewPlayer.style.transform = 'translateY(-100%)';
-      this.ViewStationHistory.style.transform = 'translateY(-200%)';
+      const isOpen = this.Shell.classList.toggle('shell--sidebar-open');
+      const url = new URL(window.location);
+      if (isOpen) {
+        url.searchParams.set('sidebar', 'open');
+      } else {
+        url.searchParams.delete('sidebar');
+      }
+      window.history.replaceState({}, '', url);
     }
   },
   loadStations: function () {
