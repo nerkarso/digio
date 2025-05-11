@@ -29,10 +29,6 @@
       animation: loading-beam 2s ease-in-out infinite;
     }
   }
-
-  &.shell--sidebar-open {
-    max-width: variables.$shell-max-width;
-  }
 }
 
 @keyframes loading-beam {
@@ -61,5 +57,13 @@
   .shell {
     border-radius: 0;
     max-width: 100%;
+  }
+}
+
+@media screen and (min-height: variables.$breakpoint-mobile) {
+  .shell {
+    &.shell--sidebar-open {
+      max-width: variables.$shell-max-width;
+    }
   }
 }

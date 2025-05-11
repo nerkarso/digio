@@ -1,5 +1,13 @@
+@use 'variables';
+
 .sidebar {
-  flex-basis: 320px;
+  flex-basis: 100%;
   flex-shrink: 0;
   border-left: 1px solid var(--border-color);
+}
+
+@media screen and (min-width: variables.$breakpoint-mobile) {
+  .sidebar {
+    flex-basis: 320px;
+  }
 }
