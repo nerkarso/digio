@@ -55,7 +55,6 @@ const App = {
   stationHistoryRendererSet: new Set(),
   init: function () {
     this.dbInit();
-    this.urlStatePreInit();
     this.cacheDom();
     this.bindEvents();
     this.setAudio();
