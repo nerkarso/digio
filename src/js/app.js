@@ -5,21 +5,27 @@ const App = {
   dbRequest: null,
   dbVersion: 1,
   isPlaying: false,
-  stationsUpdated: '2025-05-10',
+  proxy: null,
+  proxies: {
+    render: 'https://ngxproxy2.onrender.com/',
+    vercel: 'https://ngxproxy.vercel.app/proxy/',
+    local: 'http://localhost:8090/',
+  },
+  stationsUpdated: '2025-05-15',
   stations: [
     {
       id: 1,
       title: 'NIO FM',
       image: '/img/stations/nio.jpg',
       url: 'https://niofm.beheerstream.nl:8060/stream?type=http&nocache=71',
-      statusUrl: 'https://ngxproxy.vercel.app/proxy/https:/niofm.beheerstream.nl:8060/currentsong?sid=1',
+      statusUrl: 'https://niofm.beheerstream.nl:8060/currentsong?sid=1',
     },
     {
       id: 4,
       title: 'Radio Top 40',
       image: '/img/stations/radio-top-40.jpg',
       url: 'https://cc6.beheerstream.com/proxy/skurebce?mp=/stream',
-      statusUrl: 'https://ngxproxy.vercel.app/proxy/https:/cc6.beheerstream.com/proxy/skurebce/currentsong?sid=1',
+      statusUrl: 'https://cc6.beheerstream.com/proxy/skurebce/currentsong?sid=1',
     },
     {
       id: 0,
@@ -49,6 +55,7 @@ const App = {
   stationHistoryRendererSet: new Set(),
   init: function () {
     this.dbInit();
+    this.urlStatePreInit();
     this.cacheDom();
     this.bindEvents();
     this.setAudio();
@@ -178,6 +185,20 @@ const App = {
     if (sidebar === 'open') {
       this.Shell.classList.add('shell--sidebar-open');
     }
+  },
+  useProxy: function (url) {
+    const searchParams = new URLSearchParams(window.location.search);
+    const proxyName = searchParams.get('proxy');
+    if (proxyName) {
+      const proxyUrl = this.proxies[proxyName];
+      if (proxyUrl) {
+        if (proxyName === 'vercel') {
+          return proxyUrl + url.replace('https://', 'https:/');
+        }
+        return proxyUrl + url;
+      }
+    }
+    return this.proxies.render + url;
   },
   switchView: function (view) {
     if (view === 'player') {
@@ -398,7 +419,8 @@ const App = {
     const timeoutSignal = AbortSignal.timeout(3000);
     const combinedSignal = AbortSignal.any([this.loadStationStatusController.signal, timeoutSignal]);
 
-    const fetcher = fetch(station.statusUrl, { signal: combinedSignal });
+    const url = this.useProxy(station.statusUrl);
+    const fetcher = fetch(url, { signal: combinedSignal });
 
     switch (station.id) {
       case 0:
