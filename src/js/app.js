@@ -127,7 +127,7 @@ const App = {
     this.ViewPlayer.querySelector('.title').title = title || '';
   },
   renderStation: function () {
-    const station = this.stations[this.getStationId()];
+    const station = this.getStation();
     this.renderPlayer({
       heading: this.appName,
       ...station,
@@ -237,13 +237,15 @@ const App = {
       localStorage.setItem('stations', JSON.stringify(this.stations));
     }
   },
-  getStationId: function () {
-    const id = localStorage.getItem('stationId');
+  getStation: function () {
+    let id = localStorage.getItem('stationId');
     if (id === null) {
       localStorage.setItem('stationId', '0');
-      return 0;
+      return this.stations[0];
+    } else {
+      id = +id;
     }
-    return +id;
+    return this.stations.find((item) => item.id === id);
   },
   setStationId: function (id) {
     localStorage.setItem('stationId', id);
@@ -274,11 +276,13 @@ const App = {
     this.selectStation(id);
   },
   scrollStation: function (direction) {
-    let currentId = this.getStationId();
-    currentId += direction;
+    const station = this.getStation();
+    let currentIndex = this.stations.findIndex((item) => item.id === station.id);
+    currentIndex += direction;
 
-    if (currentId > -1 && currentId < this.stations.length) {
-      this.selectStation(currentId);
+    if (currentIndex > -1 && currentIndex < this.stations.length) {
+      const newStation = this.stations[currentIndex];
+      this.selectStation(newStation.id);
       this.playAudio();
     }
   },
@@ -297,7 +301,7 @@ const App = {
     }
   },
   playAudio: function () {
-    const station = this.stations[this.getStationId()];
+    const station = this.getStation();
 
     this.audio.src = station.url;
     const playPromise = this.audio.play();
@@ -364,7 +368,7 @@ const App = {
     }
   },
   loadStationStatus: async function () {
-    const station = this.stations[this.getStationId()];
+    const station = this.getStation();
     if (!station?.statusUrl) {
       this.clearStationStatusTimer();
       this.renderStationLoading(false);
@@ -494,7 +498,7 @@ const App = {
   renderStationHistory: function () {
     if (!this.db) return;
 
-    const station = this.stations[this.getStationId()];
+    const station = this.getStation();
 
     const transaction = this.db.transaction(['station_history'], 'readonly');
     const store = transaction.objectStore('station_history');
