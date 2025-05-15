@@ -12,21 +12,22 @@ body {
   //   var(--secondary-color),
   //   var(--tertiary-color)
   // );
-  background: radial-gradient(
-    115% 124% at 118.5% 50%,
-    rgba(255, 0, 176, 1) 0%,
-    rgba(0, 0, 0, 0.18) 96%
-  ),
-  radial-gradient(
-    65% 66% at 7.5% 28%,
-    rgba(0, 167, 255, 0.61) 0%,
-    rgba(33, 94, 131, 0) 96%
-  ),
-  radial-gradient(
-    107% 109% at 47.5% 89.5%,
-    rgba(166, 217, 3, 1) 6%,
-    rgba(0, 65, 255, 1) 96%
-  );
+  // background: radial-gradient(
+  //   115% 124% at 118.5% 50%,
+  //   rgba(255, 0, 176, 1) 0%,
+  //   rgba(0, 0, 0, 0.18) 96%
+  // ),
+  // radial-gradient(
+  //   65% 66% at 7.5% 28%,
+  //   rgba(0, 167, 255, 0.61) 0%,
+  //   rgba(33, 94, 131, 0) 96%
+  // ),
+  // radial-gradient(
+  //   107% 109% at 47.5% 89.5%,
+  //   rgba(166, 217, 3, 1) 6%,
+  //   rgba(0, 65, 255, 1) 96%
+  // );
+  background: var(--background-color-darker);
   color: var(--text-color);
   font-family: system-ui, sans-serif;
   margin: 0;

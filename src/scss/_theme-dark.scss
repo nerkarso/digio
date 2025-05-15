@@ -12,6 +12,7 @@ $background-color: color.mix(variables.$dark-color, variables.$light-color, 95%)
   --secondary-color: #{variables.$secondary-color};
   --tertiary-color: #{variables.$tertiary-color};
 
+  --background-color-darker: rgb(16 18 25);
   --background-color: #{$background-color};
   --background-rgb-color: #{functions.get-rgb($background-color)};
   --text-color: #{variables.$light-color};

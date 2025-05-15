@@ -10,6 +10,7 @@
   --secondary-color: #{variables.$secondary-color};
   --tertiary-color: #{variables.$tertiary-color};
 
+  --background-color-darker: rgb(223 226 236);
   --background-color: #{variables.$light-color};
   --background-rgb-color: #{functions.get-rgb(variables.$light-color)};
   --text-color: #{variables.$dark-color};
