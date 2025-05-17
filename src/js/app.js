@@ -321,7 +321,7 @@ const App = {
     this.ButtonToggleAudio.innerHTML = this.IconPlay.innerHTML;
   },
   updateTime: function () {
-    const date = new Date();
+    const date = new Date(null);
     date.setSeconds(this.audio.currentTime);
     const currentTime = date.toISOString().substring(11, 19);
 
