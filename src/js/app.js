@@ -54,7 +54,7 @@ const App = {
   stationHistoryRendererTimer: null,
   stationHistoryRendererSet: new Set(),
   init: function () {
-    this.dbInit();
+    this.initDb();
     this.cacheDom();
     this.bindEvents();
     this.setAudio();
@@ -65,7 +65,7 @@ const App = {
     this.renderStationLoading(true);
     this.renderStationHistoryEmptyItem();
     this.startStationStatusTimer();
-    this.urlStateInit();
+    this.applyUrlState();
   },
   cacheDom: function () {
     // Templates
@@ -76,6 +76,7 @@ const App = {
     this.IconHistory = document.querySelector('#IconHistory');
 
     // Elements
+    this.AudioVisualizer = document.querySelector('#AudioVisualizer');
     this.Shell = document.querySelector('#Shell');
     this.ViewPlayer = document.querySelector('#ViewPlayer');
     this.ViewStations = document.querySelector('#ViewStations');
@@ -170,7 +171,7 @@ const App = {
       this.stopAudio();
     }
   },
-  urlStateInit: function () {
+  applyUrlState: function () {
     const searchParams = new URLSearchParams(window.location.search);
     const autoplay = searchParams.get('autoplay');
     const sidebar = searchParams.get('sidebar');
@@ -210,7 +211,7 @@ const App = {
     }
     if (view === 'stationHistory') {
       const isOpen = this.Shell.classList.toggle('shell--sidebar-open');
-      const url = new URL(window.location);
+      const url = new URL(window.location.href);
       if (isOpen) {
         url.searchParams.set('sidebar', 'open');
       } else {
@@ -320,14 +321,14 @@ const App = {
     this.ButtonToggleAudio.innerHTML = this.IconPlay.innerHTML;
   },
   updateTime: function () {
-    const date = new Date(null);
+    const date = new Date();
     date.setSeconds(this.audio.currentTime);
-    const currentTime = date.toISOString().substr(11, 8);
+    const currentTime = date.toISOString().substring(11, 19);
 
     this.AudioStatus.textContent = currentTime;
   },
   openMini: function () {
-    window.open(window.location.href, null, 'width=420,height=160');
+    window.open(window.location.href, '', 'width=420,height=160');
   },
   setMediaSession: function ({ title, artist, album, image }) {
     if ('mediaSession' in navigator) {
@@ -537,7 +538,7 @@ const App = {
       }
     };
   },
-  dbInit: function () {
+  initDb: function () {
     this.dbRequest = window.indexedDB.open(this.appName.toLowerCase(), this.dbVersion);
   },
   handleDbError: function (event) {
