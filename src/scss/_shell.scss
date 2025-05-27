@@ -11,6 +11,7 @@
   backdrop-filter: saturate(180%);
   position: relative;
   transition: max-width 0.3s ease-in-out;
+  overflow: hidden;
 
   &::after {
     content: '';
@@ -49,7 +50,6 @@
     border-radius: variables.$radius-large;
     max-width: variables.$shell-min-width;
     max-height: variables.$shell-height;
-    overflow: hidden;
   }
 }
 

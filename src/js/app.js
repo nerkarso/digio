@@ -175,6 +175,7 @@ const App = {
     const searchParams = new URLSearchParams(window.location.search);
     const autoplay = searchParams.get('autoplay');
     const sidebar = searchParams.get('sidebar');
+    const mode = searchParams.get('mode');
     if (autoplay === 'true') {
       this.isPlaying = true;
       this.playAudio().catch(() => {
@@ -184,6 +185,9 @@ const App = {
     }
     if (sidebar === 'open') {
       this.Shell.classList.add('shell--sidebar-open');
+    }
+    if (mode === 'mini') {
+      this.ViewPlayer.classList.add('player--mini');
     }
   },
   useProxy: function (url) {
@@ -328,7 +332,9 @@ const App = {
     this.AudioStatus.textContent = currentTime;
   },
   openMini: function () {
-    window.open(window.location.href, '', 'width=420,height=160');
+    const url = new URL(window.location.href);
+    url.searchParams.set('mode', 'mini');
+    window.open(url.toString(), '', 'width=420,height=160');
   },
   setMediaSession: function ({ title, artist, album, image }) {
     if ('mediaSession' in navigator) {
