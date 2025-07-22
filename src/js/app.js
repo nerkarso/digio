@@ -506,6 +506,8 @@ const App = {
     if (!this.db) return;
 
     const station = this.getStation();
+    const searchParams = new URLSearchParams(window.location.search);
+    const LIMIT = searchParams.get('history-limit') || 250;
 
     const transaction = this.db.transaction(['station_history'], 'readonly');
     const store = transaction.objectStore('station_history');
@@ -516,7 +518,7 @@ const App = {
 
     cursorRequest.onsuccess = (event) => {
       const cursor = event.target.result;
-      if (cursor) {
+      if (cursor && cursorCount < LIMIT) {
         const item = cursor.value;
 
         const itemEl = document.importNode(this.ListItem.content, true);
