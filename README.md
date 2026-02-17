@@ -23,7 +23,7 @@
 
 ## Requirements
 
-- Node.js `14.x`
+- Node.js `>=14.x`
 
 ## Getting started
 
