@@ -60,7 +60,6 @@ const App = {
     this.bindEvents();
     this.setAudio();
     this.loadStations();
-    this.renderTemplate();
     this.renderStation();
     this.renderStations();
     this.renderStationLoading(true);
@@ -71,10 +70,6 @@ const App = {
   cacheDom: function () {
     // Templates
     this.ListItem = document.querySelector('#ListItem');
-    this.IconPlay = document.querySelector('#IconPlay');
-    this.IconPause = document.querySelector('#IconPause');
-    this.IconYouTube = document.querySelector('#IconYouTube');
-    this.IconHistory = document.querySelector('#IconHistory');
 
     // Elements
     this.AudioVisualizer = document.querySelector('#AudioVisualizer');
@@ -126,11 +121,6 @@ const App = {
     this.dbRequest.onupgradeneeded = this.handleDbUpgrade.bind(this);
 
     this.handleMediaSessionActions();
-  },
-  renderTemplate: function () {
-    this.ButtonToggleAudio.innerHTML = this.IconPlay.innerHTML;
-    this.ButtonSearchYouTube.innerHTML = this.IconYouTube.innerHTML;
-    this.ButtonToStationHistory.innerHTML = this.IconHistory.innerHTML;
   },
   renderPlayer: function ({ heading, image, title }) {
     this.ViewPlayer.querySelector('.heading').textContent = heading;
@@ -335,7 +325,7 @@ const App = {
 
     this.audio.src = station.url;
     const playPromise = this.audio.play();
-    this.ButtonToggleAudio.innerHTML = this.IconPause.innerHTML;
+    this.ButtonToggleAudio.innerHTML = '<i class="ti ti-player-pause"></i>';
 
     this.setMediaSession({
       ...station,
@@ -347,7 +337,7 @@ const App = {
   stopAudio: function () {
     this.audio.src = '';
     this.audio.pause();
-    this.ButtonToggleAudio.innerHTML = this.IconPlay.innerHTML;
+    this.ButtonToggleAudio.innerHTML = '<i class="ti ti-player-play"></i>';
   },
   updateTime: function () {
     const date = new Date(null);

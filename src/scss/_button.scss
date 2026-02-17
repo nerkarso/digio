@@ -31,12 +31,6 @@
   height: 50px;
   transition: transform 0.3s;
 
-  svg {
-    fill: var(--text-color);
-    width: 100%;
-    height: auto;
-  }
-
   &:hover {
     transform: scale(1.15);
   }
@@ -44,6 +38,16 @@
   &:active {
     transform: scale(1);
   }
+}
+
+.button--icon {
+  color: var(--text-color);
+  font-size: 2rem;
+  line-height: 0;
+}
+
+.button--large {
+  font-size: 3rem;
 }
 
 .button--block {
