@@ -546,30 +546,17 @@ const App = {
     const store = transaction.objectStore('station_history');
     const index = store.index('station_id');
     const keyRange = IDBKeyRange.only(station.id);
-    const cursorRequest = index.openCursor(keyRange, 'next');
+    const cursorRequest = index.openCursor(keyRange, 'prev');
     let cursorCount = 0;
+    const itemsToRender = [];
 
     cursorRequest.onsuccess = (event) => {
       const cursor = event.target.result;
       if (cursor && cursorCount < LIMIT) {
         const item = cursor.value;
 
-        const itemEl = document.importNode(this.ListItem.content, true);
-        itemEl.querySelector('.image').src = item.image;
-        itemEl.querySelector('.title').textContent = item.title;
-        itemEl.querySelector('.title').title = item.title;
-        itemEl.querySelector('.subtitle').textContent = this.formatDate(
-          item.date,
-        );
-
-        // We use text content so that HTML entities are parsed
-        const titleContent = itemEl.querySelector('.title').textContent;
-        itemEl
-          .querySelector('li')
-          .setAttribute('data-query', encodeURIComponent(titleContent));
-
         if (!this.stationHistoryRendererSet.has(item.id)) {
-          this.StationHistory.prepend(itemEl);
+          itemsToRender.push(item);
           this.stationHistoryRendererSet.add(item.id);
         }
 
@@ -579,6 +566,33 @@ const App = {
         if (cursorCount === 0) {
           this.renderStationHistoryEmptyList();
           this.renderStationHistoryEmptyItem();
+        } else if (itemsToRender.length > 0) {
+          // Render new items in reverse order of discovery (Oldest to Newest)
+          // so that the most recent item is prepended last and stays at the top.
+          for (let i = itemsToRender.length - 1; i >= 0; i--) {
+            const item = itemsToRender[i];
+            const itemEl = document.importNode(this.ListItem.content, true);
+            itemEl.querySelector('.image').src = item.image;
+            itemEl.querySelector('.title').textContent = item.title;
+            itemEl.querySelector('.title').title = item.title;
+            itemEl.querySelector('.subtitle').textContent = this.formatDate(
+              item.date,
+            );
+
+            // We use text content so that HTML entities are parsed
+            const titleContent = itemEl.querySelector('.title').textContent;
+            itemEl
+              .querySelector('li')
+              .setAttribute('data-query', encodeURIComponent(titleContent));
+
+            this.StationHistory.prepend(itemEl);
+          }
+
+          // Remove the "No history yet" message if it exists
+          const emptyItem = this.StationHistory.querySelector('.list__empty');
+          if (emptyItem) {
+            emptyItem.remove();
+          }
         }
       }
     };
@@ -649,7 +663,7 @@ const App = {
   },
   clearStationHistoryRendererTimer: function () {
     if (this.stationHistoryRendererTimer) {
-      clearInterval(this.startStationHistoryRendererTimer);
+      clearInterval(this.stationHistoryRendererTimer);
     }
   },
   formatDate: (date) => {
