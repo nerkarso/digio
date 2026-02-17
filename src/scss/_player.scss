@@ -8,6 +8,34 @@
   height: 100dvh;
 }
 
+.player__background {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--bg-color, var(--secondary-color)) 0%,
+    transparent 50%
+  );
+  opacity: 0.3;
+  transition: background 1.5s ease-in-out;
+  pointer-events: none;
+  filter: saturate(150%) blur(40px);
+  animation: subtle-pulse 20s ease-in-out infinite alternate;
+}
+
+@keyframes subtle-pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
 @media screen and (min-width: variables.$breakpoint-mobile) {
   .player {
     height: 100%;

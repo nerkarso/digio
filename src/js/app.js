@@ -54,6 +54,7 @@ const App = {
   loadStationStatusTimer: null,
   stationHistoryRendererTimer: null,
   stationHistoryRendererSet: new Set(),
+  currentImage: null,
   init: function () {
     this.initDb();
     this.cacheDom();
@@ -74,6 +75,7 @@ const App = {
     // Elements
     this.AudioVisualizer = document.querySelector('#AudioVisualizer');
     this.Shell = document.querySelector('#Shell');
+    this.Background = document.querySelector('#Background');
     this.ViewPlayer = document.querySelector('#ViewPlayer');
     this.ViewStations = document.querySelector('#ViewStations');
     this.ViewStationHistory = document.querySelector('#ViewStationHistory');
@@ -126,7 +128,7 @@ const App = {
 
     this.handleMediaSessionActions();
   },
-  renderPlayer: function ({ heading, image, title }) {
+  renderPlayer: async function ({ heading, image, title }) {
     this.ViewPlayer.querySelector('.heading').textContent = heading;
     this.ViewPlayer.querySelector('.image').style.setProperty(
       '--image',
@@ -134,6 +136,13 @@ const App = {
     );
     this.ViewPlayer.querySelector('.title').innerHTML = title;
     this.ViewPlayer.querySelector('.title').title = title || '';
+
+    if (image && image !== this.currentImage) {
+      this.currentImage = image;
+      const color = await getAverageColor(image);
+      document.body.style.setProperty('--body-bg-color', color);
+      this.Background.style.setProperty('--bg-color', color);
+    }
   },
   renderStation: function () {
     const station = this.getStation();

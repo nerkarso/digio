@@ -30,6 +30,7 @@
 .list__item__image {
   background: variables.$light-color;
   border-radius: variables.$radius-medium;
+  border: 1px solid var(--outline-color);
   max-width: 100%;
 }
 

@@ -3,7 +3,7 @@
 .banner {
   background: rgba(var(--background-rgb-color), 0.7);
   border-radius: variables.$radius-medium;
-  box-shadow: 0 0 7px 3px rgba(var(--shadow-rgb-color), 0.2);
+  box-shadow: 0 10px 30px rgba(var(--shadow-rgb-color), 0.15);
   position: fixed;
   padding: 15px;
   height: 60px;

@@ -3,7 +3,7 @@
 .sidebar {
   flex-basis: 100%;
   flex-shrink: 0;
-  border-left: 1px solid var(--border-color);
+  border-left: 1px solid var(--outline-color);
 }
 
 @media screen and (min-width: variables.$breakpoint-mobile) {

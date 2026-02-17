@@ -4,8 +4,16 @@
 
 :root {
   --primary-color: #{variables.$primary-color};
-  --primary-lighter-color: #{color.mix(variables.$primary-color, variables.$light-color, 80%)};
-  --primary-darker-color: #{color.mix(variables.$primary-color, variables.$dark-color, 80%)};
+  --primary-lighter-color: #{color.mix(
+      variables.$primary-color,
+      variables.$light-color,
+      80%
+    )};
+  --primary-darker-color: #{color.mix(
+      variables.$primary-color,
+      variables.$dark-color,
+      80%
+    )};
   --primary-text-color: #{variables.$light-color};
   --secondary-color: #{variables.$secondary-color};
   --tertiary-color: #{variables.$tertiary-color};
@@ -18,7 +26,8 @@
   --shadow-rgb-color: #{variables.$dark-rgb-color};
 
   --dialog-color: #{variables.$light-color};
-  --list-item-hover-color: rgba(#{variables.$dark-rgb-color}, 0.1);
-  --list-item-active-color: rgba(#{variables.$dark-rgb-color}, 0.2);
-  --border-color: rgba(#{variables.$dark-rgb-color}, 0.1);
+  --list-item-hover-color: rgba(#{variables.$dark-rgb-color}, 0.06);
+  --list-item-active-color: rgba(#{variables.$dark-rgb-color}, 0.12);
+  --border-color: rgba(#{variables.$dark-rgb-color}, 0.12);
+  --outline-color: rgba(#{variables.$dark-rgb-color}, 0.08);
 }

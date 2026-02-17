@@ -58,7 +58,9 @@
 
 .button--block {
   background: var(--dialog-color);
-  box-shadow: 0 -2px 6px 3px rgba(var(--shadow-rgb-color), 0.1);
+  backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 -4px 15px rgba(var(--shadow-rgb-color), 0.05);
+  border-top: 1px solid var(--outline-color);
   border-radius: variables.$radius-large variables.$radius-large 0 0;
   color: rgba(var(--text-rgb-color), 0.7);
   padding: 10px 15px;

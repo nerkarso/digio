@@ -17,6 +17,7 @@
   flex-direction: column;
   overflow: hidden;
   transition: transform 0.3s;
+  position: relative;
 }
 
 .view__header {
@@ -30,8 +31,11 @@
 .view__content {
   flex-grow: 1;
   overflow: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .view--dialog {
   background-color: var(--dialog-color);
+  backdrop-filter: saturate(180%) blur(30px);
 }
