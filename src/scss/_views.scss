@@ -1,3 +1,5 @@
+@use 'variables';
+
 .views {
   flex-basis: 100%;
   flex-shrink: 0;
@@ -21,7 +23,7 @@
 }
 
 .view__header {
-  height: 65px;
+  flex: 0 0 variables.$bar-height;
   padding: 0 15px;
   display: flex;
   align-items: center;
@@ -29,10 +31,60 @@
 }
 
 .view__content {
-  flex-grow: 1;
+  flex: 1 1 auto;
   overflow: auto;
   position: relative;
   z-index: 1;
+}
+
+.view__footer {
+  flex: 0 0 variables.$bar-height;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--outline-color);
+  gap: 10px;
+}
+
+.view__footer__pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.view__footer__limit {
+  flex-shrink: 0;
+}
+
+.select {
+  background-color: var(--dialog-color);
+  border: 1px solid var(--outline-color);
+  border-radius: 4px;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 4px 8px;
+  outline: none;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+
+  option {
+    background-color: var(--background-color-darker);
+    color: var(--text-color);
+  }
+}
+
+.pagination-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  opacity: 0.8;
 }
 
 .view--dialog {

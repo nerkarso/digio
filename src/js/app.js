@@ -54,10 +54,20 @@ const App = {
   loadStationStatusTimer: null,
   stationHistoryRendererTimer: null,
   stationHistoryRendererSet: new Set(),
+  historyPage: 1,
+  historyLimit: 20,
   currentImage: null,
   init: function () {
+    const searchParams = new URLSearchParams(window.location.search);
+    this.historyLimit = +searchParams.get('history-limit') || 20;
+
     this.initDb();
     this.cacheDom();
+
+    if (this.SelectHistoryLimit) {
+      this.SelectHistoryLimit.value = this.historyLimit;
+    }
+
     this.bindEvents();
     this.setAudio();
     this.loadStations();
@@ -94,6 +104,10 @@ const App = {
     this.ButtonCloseStationHistory = document.querySelector(
       '#ButtonCloseStationHistory',
     );
+    this.ButtonHistoryPrev = document.querySelector('#ButtonHistoryPrev');
+    this.ButtonHistoryNext = document.querySelector('#ButtonHistoryNext');
+    this.HistoryPageNumber = document.querySelector('#HistoryPageNumber');
+    this.SelectHistoryLimit = document.querySelector('#SelectHistoryLimit');
   },
   bindEvents: function () {
     this.Stations.onclick = this.switchStation.bind(this);
@@ -113,6 +127,9 @@ const App = {
       this,
       'stationHistory',
     );
+    this.ButtonHistoryPrev.onclick = this.changeHistoryPage.bind(this, -1);
+    this.ButtonHistoryNext.onclick = this.changeHistoryPage.bind(this, 1);
+    this.SelectHistoryLimit.onchange = this.changeHistoryLimit.bind(this);
     this.ButtonSearchYouTube.onclick = this.searchYouTube.bind(this, 'player');
 
     this.audio.ontimeupdate = this.updateTime.bind(this);
@@ -289,6 +306,7 @@ const App = {
 
     this.clearStationStatusTimer();
     this.clearStationHistoryRendererTimer();
+    this.historyPage = 1;
     this.renderStationHistoryEmptyList();
 
     setTimeout(() => {
@@ -538,29 +556,67 @@ const App = {
     emptyEl.textContent = 'No history yet';
     this.StationHistory.appendChild(emptyEl);
   },
-  renderStationHistory: function () {
+  changeHistoryPage: function (direction) {
+    this.historyPage += direction;
+    this.renderStationHistory(true);
+    this.StationHistory.parentElement.scrollTop = 0;
+  },
+  changeHistoryLimit: function (event) {
+    this.historyLimit = +event.target.value;
+    this.historyPage = 1;
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('history-limit', this.historyLimit);
+    window.history.replaceState({}, '', url);
+
+    this.renderStationHistory(true);
+  },
+  renderStationHistory: function (forceRefresh = false) {
     if (!this.db) return;
 
+    if (forceRefresh) {
+      this.renderStationHistoryEmptyList();
+    }
+
     const station = this.getStation();
-    const searchParams = new URLSearchParams(window.location.search);
-    const LIMIT = searchParams.get('history-limit') || 250;
+    const LIMIT = this.historyLimit;
+    const OFFSET = (this.historyPage - 1) * LIMIT;
 
     const transaction = this.db.transaction(['station_history'], 'readonly');
     const store = transaction.objectStore('station_history');
     const index = store.index('station_id');
     const keyRange = IDBKeyRange.only(station.id);
+
+    const countRequest = index.count(keyRange);
+    countRequest.onsuccess = () => {
+      const totalCount = countRequest.result;
+      const totalPages = Math.ceil(totalCount / LIMIT);
+      const start = totalCount === 0 ? 0 : (this.historyPage - 1) * LIMIT + 1;
+      const end = Math.min(this.historyPage * LIMIT, totalCount);
+
+      this.ButtonHistoryPrev.disabled = this.historyPage === 1;
+      this.ButtonHistoryNext.disabled = this.historyPage * LIMIT >= totalCount;
+      this.HistoryPageNumber.textContent = `${start}-${end} / ${totalCount}`;
+    };
+
+    if (this.historyPage > 1 && !forceRefresh) {
+      return;
+    }
+
     const cursorRequest = index.openCursor(keyRange, 'prev');
     let cursorCount = 0;
     const itemsToRender = [];
 
     cursorRequest.onsuccess = (event) => {
       const cursor = event.target.result;
-      if (cursor && cursorCount < LIMIT) {
-        const item = cursor.value;
+      if (cursor && cursorCount < OFFSET + LIMIT) {
+        if (cursorCount >= OFFSET) {
+          const item = cursor.value;
 
-        if (!this.stationHistoryRendererSet.has(item.id)) {
-          itemsToRender.push(item);
-          this.stationHistoryRendererSet.add(item.id);
+          if (!this.stationHistoryRendererSet.has(item.id)) {
+            itemsToRender.push(item);
+            this.stationHistoryRendererSet.add(item.id);
+          }
         }
 
         cursorCount++;
@@ -570,11 +626,10 @@ const App = {
           this.renderStationHistoryEmptyList();
           this.renderStationHistoryEmptyItem();
         } else if (itemsToRender.length > 0) {
-          // Render new items in reverse order of discovery (Oldest to Newest)
-          // so that the most recent item is prepended last and stays at the top.
           for (let i = itemsToRender.length - 1; i >= 0; i--) {
             const item = itemsToRender[i];
             const itemEl = document.importNode(this.ListItem.content, true);
+            itemEl.querySelector('li').setAttribute('data-id', item.id);
             itemEl.querySelector('.image').src = item.image;
             itemEl.querySelector('.title').textContent = item.title;
             itemEl.querySelector('.title').title = item.title;
@@ -582,7 +637,6 @@ const App = {
               item.date,
             );
 
-            // We use text content so that HTML entities are parsed
             const titleContent = itemEl.querySelector('.title').textContent;
             itemEl
               .querySelector('li')
@@ -591,10 +645,19 @@ const App = {
             this.StationHistory.prepend(itemEl);
           }
 
-          // Remove the "No history yet" message if it exists
           const emptyItem = this.StationHistory.querySelector('.list__empty');
           if (emptyItem) {
             emptyItem.remove();
+          }
+
+          if (this.historyPage === 1 && !forceRefresh) {
+            while (this.StationHistory.children.length > LIMIT) {
+              const lastChild = this.StationHistory.lastElementChild;
+              if (lastChild && lastChild.dataset.id) {
+                this.stationHistoryRendererSet.delete(+lastChild.dataset.id);
+              }
+              this.StationHistory.removeChild(lastChild);
+            }
           }
         }
       }
@@ -613,7 +676,7 @@ const App = {
     this.db = event.target.result;
     // Clear the list
     this.renderStationHistoryEmptyList();
-    this.renderStationHistory();
+    this.renderStationHistory(true);
     // We start rendering the history when the database is ready
     this.startStationHistoryRendererTimer();
   },

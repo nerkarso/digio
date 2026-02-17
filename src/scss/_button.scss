@@ -23,6 +23,12 @@
   &:active {
     background: var(--primary-darker-color);
   }
+
+  &:disabled {
+    background: var(--outline-color);
+    color: rgba(var(--text-rgb-color), 0.3);
+    cursor: default;
+  }
 }
 
 .button--round {
@@ -44,6 +50,12 @@
   color: var(--text-color);
   font-size: 2rem;
   line-height: 0;
+
+  &:disabled {
+    color: rgba(var(--text-rgb-color), 0.3);
+    cursor: default;
+    transform: none;
+  }
 }
 
 .button--large {
@@ -63,7 +75,8 @@
   border-top: 1px solid var(--outline-color);
   border-radius: variables.$radius-large variables.$radius-large 0 0;
   color: rgba(var(--text-rgb-color), 0.7);
-  padding: 10px 15px;
+  height: variables.$bar-height;
+  padding: 0 15px;
   width: 100%;
   transition: color 0.3s;
 

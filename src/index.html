@@ -92,6 +92,27 @@
       <div class="view__content">
         <ul id="StationHistory" class="list"></ul>
       </div>
+      <footer class="view__footer">
+        <div class="view__footer__pagination">
+          <button id="ButtonHistoryPrev" class="button button--icon button--round button--small" title="Previous page"
+            disabled>
+            <i class="ti ti-circle-chevron-left"></i>
+          </button>
+          <span id="HistoryPageNumber" class="pagination-text">0-0 / 0</span>
+          <button id="ButtonHistoryNext" class="button button--icon button--round button--small" title="Next page"
+            disabled>
+            <i class="ti ti-circle-chevron-right"></i>
+          </button>
+        </div>
+        <div class="view__footer__limit">
+          <select id="SelectHistoryLimit" class="select" title="Items per page">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </footer>
     </section>
   </div>
 
