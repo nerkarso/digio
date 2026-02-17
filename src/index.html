@@ -40,16 +40,28 @@
               <p id="AudioStatus" class="player__status">00:00:00</p>
             </div>
             <div class="player__controls">
-              <button id="ButtonSearchYouTube" class="button button--icon button--round" title="Search song on YouTube">
-                <i class="ti ti-brand-youtube"></i>
-              </button>
-              <button id="ButtonToggleAudio" class="button button--icon button--large button--round" title="Play/Pause">
-                <i class="ti ti-player-play"></i>
-              </button>
-              <button id="ButtonToStationHistory" class="button button--icon button--round"
-                title="Show station history">
-                <i class="ti ti-clock"></i>
-              </button>
+              <div class="player__controls__main">
+                <button id="ButtonPrevStation" class="button button--icon button--round" title="Previous station">
+                  <i class="ti ti-player-track-prev"></i>
+                </button>
+                <button id="ButtonToggleAudio" class="button button--icon button--large button--round"
+                  title="Play/Pause">
+                  <i class="ti ti-player-play"></i>
+                </button>
+                <button id="ButtonNextStation" class="button button--icon button--round" title="Next station">
+                  <i class="ti ti-player-track-next"></i>
+                </button>
+              </div>
+              <div class="player__controls__sub">
+                <button id="ButtonSearchYouTube" class="button button--icon button--round button--small"
+                  title="Search song on YouTube">
+                  <i class="ti ti-brand-youtube"></i>
+                </button>
+                <button id="ButtonToStationHistory" class="button button--icon button--round button--small"
+                  title="Show station history">
+                  <i class="ti ti-clock"></i>
+                </button>
+              </div>
             </div>
             <div class="player__switch">
               <button id="ButtonToStations" class="button button--block">Stations</button>

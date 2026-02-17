@@ -78,9 +78,26 @@
 
 .player__controls {
   flex-grow: 2;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.player__controls__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 30px;
+  width: 100%;
+}
+
+.player__controls__sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
 }
 
 .player__switch {
@@ -117,10 +134,19 @@
 
   .player__controls {
     flex-grow: 1;
-    grid-template-columns: 1fr;
-    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     padding-inline: 10px;
     text-align: center;
+
+    .player__controls__main,
+    .player__controls__sub {
+      display: flex;
+      flex-direction: row; // Ensure buttons in groups stay in a row
+      justify-content: center;
+      gap: 5px;
+    }
 
     .button {
       width: 40px;
