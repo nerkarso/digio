@@ -17,13 +17,13 @@ function processCss() {
         outputStyle: 'nested',
         precision: 10,
         includePaths: ['.'],
-      })
+      }),
     )
     .pipe(cleanCss())
     .pipe(
       rename({
         suffix: '.min',
-      })
+      }),
     )
     .pipe(gulp.dest('dist/css'));
 }
@@ -36,7 +36,7 @@ function processJs() {
       .pipe(
         babel({
           presets: ['@babel/preset-env'],
-        })
+        }),
       )
       .pipe(uglify())
       .pipe(concat('main.min.js'))
@@ -49,7 +49,9 @@ function clean() {
 }
 
 function copy() {
-  return gulp.src(filesToCopy, { base: 'src', encoding: false }).pipe(gulp.dest('dist'));
+  return gulp
+    .src(filesToCopy, { base: 'src', encoding: false })
+    .pipe(gulp.dest('dist'));
 }
 
 function watching(cb) {
@@ -71,6 +73,11 @@ function uploadDir() {
   return gulp.src('dist/**/*').pipe(gulp.dest(destDir));
 }
 
-exports.watch = gulp.series(clean, copy, gulp.parallel(processCss, processJs), watching);
+exports.watch = gulp.series(
+  clean,
+  copy,
+  gulp.parallel(processCss, processJs),
+  watching,
+);
 exports.build = gulp.series(clean, copy, gulp.parallel(processCss, processJs));
 exports.upload = gulp.series(cleanDir, uploadDir);

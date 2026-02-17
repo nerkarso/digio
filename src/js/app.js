@@ -25,7 +25,8 @@ const App = {
       title: 'Radio Top 40',
       image: '/img/stations/radio-top-40.jpg',
       url: 'https://cc6.beheerstream.com/proxy/skurebce?mp=/stream',
-      statusUrl: 'https://cc6.beheerstream.com/proxy/skurebce/currentsong?sid=1',
+      statusUrl:
+        'https://cc6.beheerstream.com/proxy/skurebce/currentsong?sid=1',
     },
     {
       id: 0,
@@ -88,8 +89,12 @@ const App = {
     this.ButtonToStations = document.querySelector('#ButtonToStations');
     this.ButtonToPlayer = document.querySelectorAll('.ButtonToPlayer');
     this.ButtonSearchYouTube = document.querySelector('#ButtonSearchYouTube');
-    this.ButtonToStationHistory = document.querySelector('#ButtonToStationHistory');
-    this.ButtonCloseStationHistory = document.querySelector('#ButtonCloseStationHistory');
+    this.ButtonToStationHistory = document.querySelector(
+      '#ButtonToStationHistory',
+    );
+    this.ButtonCloseStationHistory = document.querySelector(
+      '#ButtonCloseStationHistory',
+    );
   },
   bindEvents: function () {
     this.Stations.onclick = this.switchStation.bind(this);
@@ -99,8 +104,14 @@ const App = {
     Array.from(this.ButtonToPlayer).forEach((button) => {
       button.onclick = this.switchView.bind(this, 'player');
     });
-    this.ButtonToStationHistory.onclick = this.switchView.bind(this, 'stationHistory');
-    this.ButtonCloseStationHistory.onclick = this.switchView.bind(this, 'stationHistory');
+    this.ButtonToStationHistory.onclick = this.switchView.bind(
+      this,
+      'stationHistory',
+    );
+    this.ButtonCloseStationHistory.onclick = this.switchView.bind(
+      this,
+      'stationHistory',
+    );
     this.ButtonSearchYouTube.onclick = this.searchYouTube.bind(this, 'player');
 
     this.audio.ontimeupdate = this.updateTime.bind(this);
@@ -123,7 +134,10 @@ const App = {
   },
   renderPlayer: function ({ heading, image, title }) {
     this.ViewPlayer.querySelector('.heading').textContent = heading;
-    this.ViewPlayer.querySelector('.image').style.setProperty('--image', `url('${image}')`);
+    this.ViewPlayer.querySelector('.image').style.setProperty(
+      '--image',
+      `url('${image}')`,
+    );
     this.ViewPlayer.querySelector('.title').innerHTML = title;
     this.ViewPlayer.querySelector('.title').title = title || '';
   },
@@ -166,7 +180,10 @@ const App = {
   },
   handleError: function () {
     this.AudioStatus.textContent = '00:00:00';
-    if (this.audio.error && this.audio.error.message.indexOf('Format error') > -1) {
+    if (
+      this.audio.error &&
+      this.audio.error.message.indexOf('Format error') > -1
+    ) {
       this.isPlaying = false;
       this.stopAudio();
     }
@@ -227,10 +244,16 @@ const App = {
   loadStations: function () {
     const stationsUpdated = localStorage.getItem('stations-updated');
     if (!stationsUpdated) {
-      localStorage.setItem('stations-updated', JSON.stringify(this.stationsUpdated));
+      localStorage.setItem(
+        'stations-updated',
+        JSON.stringify(this.stationsUpdated),
+      );
     } else {
       if (this.stationsUpdated !== JSON.parse(stationsUpdated)) {
-        localStorage.setItem('stations-updated', JSON.stringify(this.stationsUpdated));
+        localStorage.setItem(
+          'stations-updated',
+          JSON.stringify(this.stationsUpdated),
+        );
         localStorage.removeItem('stations');
       }
     }
@@ -252,7 +275,7 @@ const App = {
     }
     return this.stations.find((item) => item.id === id);
   },
-  setStationId: function (id) {
+  setStationId: (id) => {
     localStorage.setItem('stationId', id);
   },
   selectStation: function (id) {
@@ -282,7 +305,9 @@ const App = {
   },
   scrollStation: function (direction) {
     const station = this.getStation();
-    let currentIndex = this.stations.findIndex((item) => item.id === station.id);
+    let currentIndex = this.stations.findIndex(
+      (item) => item.id === station.id,
+    );
     currentIndex += direction;
 
     if (currentIndex > -1 && currentIndex < this.stations.length) {
@@ -331,12 +356,12 @@ const App = {
 
     this.AudioStatus.textContent = currentTime;
   },
-  openMini: function () {
+  openMini: () => {
     const url = new URL(window.location.href);
     url.searchParams.set('mode', 'mini');
     window.open(url.toString(), '', 'width=420,height=160');
   },
-  setMediaSession: function ({ title, artist, album, image }) {
+  setMediaSession: ({ title, artist, album, image }) => {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title,
@@ -427,13 +452,16 @@ const App = {
   fetchStationStatus: async function (station) {
     this.loadStationStatusController = new AbortController();
     const timeoutSignal = AbortSignal.timeout(3000);
-    const combinedSignal = AbortSignal.any([this.loadStationStatusController.signal, timeoutSignal]);
+    const combinedSignal = AbortSignal.any([
+      this.loadStationStatusController.signal,
+      timeoutSignal,
+    ]);
 
     const url = this.useProxy(station.statusUrl);
     const fetcher = fetch(url, { signal: combinedSignal });
 
     switch (station.id) {
-      case 0:
+      case 0: {
         const result0 = await fetcher.then((res) => res.json());
         if (!result0) throw new Error('No data');
 
@@ -441,7 +469,8 @@ const App = {
           title: result0?.current_track?.title,
           image: result0?.current_track?.artwork_url_large,
         };
-      default:
+      }
+      default: {
         // Shoutcast
         const resultText = await fetcher.then((res) => res.text());
         if (!resultText) throw new Error('No data');
@@ -449,6 +478,7 @@ const App = {
         return {
           title: resultText,
         };
+      }
     }
   },
   startStationStatusTimer: function () {
@@ -464,7 +494,7 @@ const App = {
       clearInterval(this.loadStationStatusTimer);
     }
   },
-  setDocumentTitle: function (title) {
+  setDocumentTitle: (title) => {
     document.title = title;
   },
   renderStationLoading: function (value) {
@@ -479,13 +509,16 @@ const App = {
 
     switch (context) {
       case 'player':
-        q = encodeURIComponent(this.ViewPlayer.querySelector('.title').textContent);
+        q = encodeURIComponent(
+          this.ViewPlayer.querySelector('.title').textContent,
+        );
         break;
-      case 'history':
+      case 'history': {
         const li = event.target.closest('li');
         // Query is already URI encoded
         q = li.dataset.query;
         break;
+      }
     }
 
     if (!q) return;
@@ -525,11 +558,15 @@ const App = {
         itemEl.querySelector('.image').src = item.image;
         itemEl.querySelector('.title').textContent = item.title;
         itemEl.querySelector('.title').title = item.title;
-        itemEl.querySelector('.subtitle').textContent = this.formatDate(item.date);
+        itemEl.querySelector('.subtitle').textContent = this.formatDate(
+          item.date,
+        );
 
         // We use text content so that HTML entities are parsed
         const titleContent = itemEl.querySelector('.title').textContent;
-        itemEl.querySelector('li').setAttribute('data-query', encodeURIComponent(titleContent));
+        itemEl
+          .querySelector('li')
+          .setAttribute('data-query', encodeURIComponent(titleContent));
 
         if (!this.stationHistoryRendererSet.has(item.id)) {
           this.StationHistory.prepend(itemEl);
@@ -547,9 +584,12 @@ const App = {
     };
   },
   initDb: function () {
-    this.dbRequest = window.indexedDB.open(this.appName.toLowerCase(), this.dbVersion);
+    this.dbRequest = window.indexedDB.open(
+      this.appName.toLowerCase(),
+      this.dbVersion,
+    );
   },
-  handleDbError: function (event) {
+  handleDbError: (event) => {
     console.error(event);
   },
   handleDbSuccess: function (event) {
@@ -560,13 +600,18 @@ const App = {
     // We start rendering the history when the database is ready
     this.startStationHistoryRendererTimer();
   },
-  handleDbUpgrade: function (event) {
+  handleDbUpgrade: (event) => {
     const db = event.target.result;
 
-    const stationHistoryStore = db.createObjectStore('station_history', { keyPath: 'id', autoIncrement: true });
+    const stationHistoryStore = db.createObjectStore('station_history', {
+      keyPath: 'id',
+      autoIncrement: true,
+    });
     stationHistoryStore.createIndex('title', 'title', { unique: false });
     stationHistoryStore.createIndex('image', 'image', { unique: false });
-    stationHistoryStore.createIndex('station_id', 'station_id', { unique: false });
+    stationHistoryStore.createIndex('station_id', 'station_id', {
+      unique: false,
+    });
     stationHistoryStore.createIndex('date', 'date', { unique: false });
   },
   stationHistoryAdd: function ({ title, image, stationId }) {
@@ -581,7 +626,13 @@ const App = {
     cursorRequest.onsuccess = (event) => {
       const cursor = event.target.result;
       // If there's no last item means the history is empty
-      if (!cursor || !(cursor?.value?.title === title && cursor?.value?.station_id === stationId)) {
+      if (
+        !cursor ||
+        !(
+          cursor?.value?.title === title &&
+          cursor?.value?.station_id === stationId
+        )
+      ) {
         store.add({
           title: title,
           image: image,
@@ -601,7 +652,7 @@ const App = {
       clearInterval(this.startStationHistoryRendererTimer);
     }
   },
-  formatDate: function (date) {
+  formatDate: (date) => {
     const formatter = new Intl.DateTimeFormat('en-US', {
       day: 'numeric',
       month: 'short',

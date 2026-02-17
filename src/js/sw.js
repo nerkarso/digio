@@ -1,20 +1,20 @@
 // Register a service worker.
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
+  window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('service-worker.js', { scope: '/' })
-      .then(reg => {
+      .then((reg) => {
         console.log('✅ [Registration]');
         console.log('✅ [Scope]', reg.scope);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('⛔ [Registration]', err);
       });
   });
 }
 
 let deferredPrompt;
-window.addEventListener('beforeinstallprompt', event => {
+window.addEventListener('beforeinstallprompt', (event) => {
   // Prevent Chrome 67 and earlier from automatically showing the prompt
   event.preventDefault();
 
@@ -22,12 +22,12 @@ window.addEventListener('beforeinstallprompt', event => {
   deferredPrompt = event;
 
   // Attach the install prompt to a user gesture
-  document.querySelector('#ButtonInstall').onclick = event => {
+  document.querySelector('#ButtonInstall').onclick = (event) => {
     // Show the prompt
     deferredPrompt.prompt();
 
     // Wait for the user to respond to the prompt
-    deferredPrompt.userChoice.then(choiceResult => {
+    deferredPrompt.userChoice.then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
         console.log('User accepted the A2HS prompt');
       } else {
