@@ -13,11 +13,13 @@ $light-color: #ffffff;
 $dark-rgb-color: functions.get-rgb($dark-color);
 $light-rgb-color: functions.get-rgb($light-color);
 
-$shell-min-width: 320px;
-$shell-max-width: 640px;
-$shell-height: 480px;
+$shell-min-width: 360px;
+$shell-max-width: 720px;
+$shell-height: 520px;
 
 $radius-medium: 8px;
 $radius-large: 16px;
 
-$breakpoint-mobile: 480px;
+$font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+$breakpoint-mobile: 520px;
