@@ -9,7 +9,7 @@ const App = {
   proxies: {
     render: 'https://ngxproxy2.onrender.com/',
     vercel: 'https://ngxproxy.vercel.app/proxy/',
-    local: 'http://localhost:8090/',
+    local: 'http://localhost:8800/',
   },
   stationsUpdated: '2025-05-15',
   stations: [
