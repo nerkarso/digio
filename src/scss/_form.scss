@@ -1,0 +1,44 @@
+@use 'variables';
+
+.form {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form__group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.input {
+  background: var(--background-color-darker);
+  border: 1px solid var(--outline-color);
+  border-radius: variables.$radius-medium;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 16px;
+  padding: 10px 12px;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
+}
+
+.form__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}

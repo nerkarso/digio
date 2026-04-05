@@ -31,6 +31,13 @@
   }
 }
 
+.button--danger {
+  background-color: variables.$tertiary-color;
+  border-radius: variables.$radius-medium;
+  color: #fff;
+  padding: 5px 15px;
+}
+
 .button--round {
   border-radius: 50%;
   width: 50px;

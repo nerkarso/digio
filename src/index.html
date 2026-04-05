@@ -1,137 +1,302 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Digio</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Digio" />
+    <meta
+      property="og:description"
+      content="Listen to your favorite Surinamese radio stations from anywhere"
+    />
+    <meta
+      property="og:image"
+      content="https://digio.vercel.app/img/og-image.jpg"
+    />
+    <meta name="application-name" content="Digio" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Digio" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="theme-color" content="#fc2c54" />
+    <link rel="manifest" href="manifest.json" />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="img/icons/apple-touch-icon-152x152.png"
+    />
+    <link rel="icon" sizes="48x48" href="img/icons/icon-48x48.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.41.0/dist/tabler-icons-filled.min.css"
+    />
+    <link rel="stylesheet" href="css/main.min.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>Digio</title>
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Digio" />
-  <meta property="og:description" content="Listen to your favorite Surinamese radio stations from anywhere" />
-  <meta property="og:image" content="https://digio.vercel.app/img/og-image.jpg" />
-  <meta name="application-name" content="Digio" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Digio" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#fc2c54" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" sizes="152x152" href="img/icons/apple-touch-icon-152x152.png" />
-  <link rel="icon" sizes="48x48" href="img/icons/icon-48x48.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.36.1/dist/tabler-icons-filled.min.css" />
-  <link rel="stylesheet" href="css/main.min.css" />
-</head>
-
-<body>
-  <div id="Shell" class="shell">
-    <div class="views">
-      <section id="ViewPlayer" class="view">
-        <div id="Background" class="player__background"></div>
-        <div class="view__content">
-          <div class="player">
-            <div class="player__header">
-              <h4 class="player__heading heading"></h4>
-            </div>
-            <div class="player__image">
-              <div class="image"></div>
-            </div>
-            <div class="player__content">
-              <h2 class="player__title title"></h2>
-              <p id="AudioStatus" class="player__status">00:00:00</p>
-            </div>
-            <div class="player__controls">
-              <div class="player__controls__main">
-                <button id="ButtonPrevStation" class="button button--icon button--round" title="Previous station">
-                  <i class="ti ti-player-track-prev"></i>
-                </button>
-                <button id="ButtonToggleAudio" class="button button--icon button--large button--round"
-                  title="Play/Pause">
-                  <i class="ti ti-player-play"></i>
-                </button>
-                <button id="ButtonNextStation" class="button button--icon button--round" title="Next station">
-                  <i class="ti ti-player-track-next"></i>
+  <body>
+    <div id="Shell" class="shell">
+      <div class="views">
+        <section id="ViewPlayer" class="view">
+          <div id="Background" class="player__background"></div>
+          <div class="view__content">
+            <div class="player">
+              <div class="player__header">
+                <h4 class="player__heading heading"></h4>
+              </div>
+              <div class="player__image">
+                <div class="image"></div>
+              </div>
+              <div class="player__content">
+                <h2 class="player__title title"></h2>
+                <p id="AudioStatus" class="player__status">00:00:00</p>
+              </div>
+              <div class="player__controls">
+                <div class="player__controls__main">
+                  <button
+                    type="button"
+                    id="ButtonPrevStation"
+                    class="button button--icon button--round"
+                    title="Previous station"
+                  >
+                    <i class="ti ti-player-track-prev"></i>
+                  </button>
+                  <button
+                    type="button"
+                    id="ButtonToggleAudio"
+                    class="button button--icon button--large button--round"
+                    title="Play/Pause"
+                  >
+                    <i class="ti ti-player-play"></i>
+                  </button>
+                  <button
+                    type="button"
+                    id="ButtonNextStation"
+                    class="button button--icon button--round"
+                    title="Next station"
+                  >
+                    <i class="ti ti-player-track-next"></i>
+                  </button>
+                </div>
+                <div class="player__controls__sub">
+                  <button
+                    type="button"
+                    id="ButtonSearchYouTube"
+                    class="button button--icon button--round button--small"
+                    title="Search song on YouTube"
+                  >
+                    <i class="ti ti-brand-youtube"></i>
+                  </button>
+                  <button
+                    type="button"
+                    id="ButtonToStationHistory"
+                    class="button button--icon button--round button--small"
+                    title="Show station history"
+                  >
+                    <i class="ti ti-clock"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="player__switch">
+                <button
+                  type="button"
+                  id="ButtonToStations"
+                  class="button button--block"
+                >
+                  Stations
                 </button>
               </div>
-              <div class="player__controls__sub">
-                <button id="ButtonSearchYouTube" class="button button--icon button--round button--small"
-                  title="Search song on YouTube">
-                  <i class="ti ti-brand-youtube"></i>
-                </button>
-                <button id="ButtonToStationHistory" class="button button--icon button--round button--small"
-                  title="Show station history">
-                  <i class="ti ti-clock"></i>
-                </button>
-              </div>
-            </div>
-            <div class="player__switch">
-              <button id="ButtonToStations" class="button button--block">Stations</button>
             </div>
           </div>
+        </section>
+        <section id="ViewStations" class="view view--dialog">
+          <header class="view__header">
+            <h2>Stations</h2>
+            <div class="view__header__actions">
+              <button
+                type="button"
+                id="ButtonAddStation"
+                class="button button--icon button--round button--small"
+                title="Add station"
+              >
+                <i class="ti ti-plus"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--primary ButtonToPlayer"
+              >
+                Done
+              </button>
+            </div>
+          </header>
+          <div class="view__content">
+            <ul id="Stations" class="list"></ul>
+          </div>
+        </section>
+      </div>
+
+      <div id="ModalStationForm" class="modal">
+        <div class="modal__content">
+          <header class="modal__header">
+            <h2 id="StationFormTitle">Add Station</h2>
+            <button
+              type="button"
+              id="ButtonCloseStationForm"
+              class="button button--icon button--round button--small"
+              title="Close"
+            >
+              <i class="ti ti-x"></i>
+            </button>
+          </header>
+          <div class="modal__body">
+            <form id="StationForm" class="form">
+              <input type="hidden" id="InputStationId" />
+              <div class="form__group">
+                <label for="InputStationTitle" class="label">Title</label>
+                <input
+                  type="text"
+                  id="InputStationTitle"
+                  class="input"
+                  placeholder="Station name"
+                  required
+                />
+              </div>
+              <div class="form__group">
+                <label for="InputStationImage" class="label">Image URL</label>
+                <input
+                  type="url"
+                  id="InputStationImage"
+                  class="input"
+                  placeholder="https://..."
+                  required
+                />
+              </div>
+              <div class="form__group">
+                <label for="InputStationUrl" class="label">Stream URL</label>
+                <input
+                  type="url"
+                  id="InputStationUrl"
+                  class="input"
+                  placeholder="https://..."
+                  required
+                />
+              </div>
+              <div class="form__group">
+                <label for="InputStationStatusUrl" class="label"
+                  >Status URL (optional)</label
+                >
+                <input
+                  type="url"
+                  id="InputStationStatusUrl"
+                  class="input"
+                  placeholder="https://..."
+                />
+              </div>
+              <div class="form__actions">
+                <button type="submit" class="button button--primary">
+                  Save
+                </button>
+                <button
+                  type="button"
+                  id="ButtonDeleteStation"
+                  class="button button--danger"
+                  style="display: none"
+                >
+                  Delete
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </section>
-      <section id="ViewStations" class="view view--dialog">
+      </div>
+
+      <section id="ViewStationHistory" class="view view--dialog sidebar">
         <header class="view__header">
-          <h2>Stations</h2>
-          <button class="button button--primary ButtonToPlayer">Done</button>
+          <h2>Station History</h2>
+          <button
+            type="button"
+            id="ButtonCloseStationHistory"
+            class="button button--primary"
+          >
+            Close
+          </button>
         </header>
         <div class="view__content">
-          <ul id="Stations" class="list"></ul>
+          <ul id="StationHistory" class="list"></ul>
         </div>
+        <footer class="view__footer">
+          <div class="view__footer__pagination">
+            <button
+              type="button"
+              id="ButtonHistoryPrev"
+              class="button button--icon button--round button--small"
+              title="Previous page"
+              disabled
+            >
+              <i class="ti ti-circle-chevron-left"></i>
+            </button>
+            <span id="HistoryPageNumber" class="pagination-text">0-0 / 0</span>
+            <button
+              type="button"
+              id="ButtonHistoryNext"
+              class="button button--icon button--round button--small"
+              title="Next page"
+              disabled
+            >
+              <i class="ti ti-circle-chevron-right"></i>
+            </button>
+          </div>
+          <div class="view__footer__limit">
+            <select
+              id="SelectHistoryLimit"
+              class="select"
+              title="Items per page"
+            >
+              <option value="10">10</option>
+              <option value="20" selected>20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </footer>
       </section>
     </div>
-    <section id="ViewStationHistory" class="view view--dialog sidebar">
-      <header class="view__header">
-        <h2>Station History</h2>
-        <button id="ButtonCloseStationHistory" class="button button--primary">Close</button>
-      </header>
-      <div class="view__content">
-        <ul id="StationHistory" class="list"></ul>
-      </div>
-      <footer class="view__footer">
-        <div class="view__footer__pagination">
-          <button id="ButtonHistoryPrev" class="button button--icon button--round button--small" title="Previous page"
-            disabled>
-            <i class="ti ti-circle-chevron-left"></i>
-          </button>
-          <span id="HistoryPageNumber" class="pagination-text">0-0 / 0</span>
-          <button id="ButtonHistoryNext" class="button button--icon button--round button--small" title="Next page"
-            disabled>
-            <i class="ti ti-circle-chevron-right"></i>
-          </button>
+
+    <div id="Install" class="banner">
+      <p>Install app</p>
+      <button type="button" id="ButtonInstall" class="button button--primary">
+        Install
+      </button>
+    </div>
+
+    <template id="ListItem">
+      <li class="list__item list__item--with-handle" draggable="true">
+        <div class="list__item__drag-handle">
+          <i class="ti ti-menu-2"></i>
         </div>
-        <div class="view__footer__limit">
-          <select id="SelectHistoryLimit" class="select" title="Items per page">
-            <option value="10">10</option>
-            <option value="20" selected>20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
+        <img src="" class="list__item__image image" alt="" />
+        <div class="list__item__content">
+          <span class="list__item__title title"></span>
+          <span class="list__item__subtitle subtitle"></span>
         </div>
-      </footer>
-    </section>
-  </div>
+        <div class="list__item__edit" title="Edit station">
+          <i class="ti ti-pencil"></i>
+        </div>
+      </li>
+    </template>
 
-  <div id="Install" class="banner">
-    <p>Install app</p>
-    <button id="ButtonInstall" class="button button--primary">Install</button>
-  </div>
-
-  <template id="ListItem">
-    <li class="list__item">
-      <img src="" class="list__item__image image" alt="" />
-      <div class="list__item__content">
-        <span class="list__item__title title"></span>
-        <span class="list__item__subtitle subtitle"></span>
-      </div>
-    </li>
-  </template>
-
-  <script src="js/main.min.js"></script>
-</body>
-
+    <script src="js/main.min.js"></script>
+  </body>
 </html>

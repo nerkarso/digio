@@ -115,9 +115,26 @@ const App = {
     this.ButtonHistoryNext = document.querySelector('#ButtonHistoryNext');
     this.HistoryPageNumber = document.querySelector('#HistoryPageNumber');
     this.SelectHistoryLimit = document.querySelector('#SelectHistoryLimit');
+
+    // Station Form
+    this.ModalStationForm = document.querySelector('#ModalStationForm');
+    this.StationForm = document.querySelector('#StationForm');
+    this.StationFormTitle = document.querySelector('#StationFormTitle');
+    this.ButtonAddStation = document.querySelector('#ButtonAddStation');
+    this.ButtonCloseStationForm = document.querySelector(
+      '#ButtonCloseStationForm',
+    );
+    this.ButtonDeleteStation = document.querySelector('#ButtonDeleteStation');
+    this.InputStationId = document.querySelector('#InputStationId');
+    this.InputStationTitle = document.querySelector('#InputStationTitle');
+    this.InputStationImage = document.querySelector('#InputStationImage');
+    this.InputStationUrl = document.querySelector('#InputStationUrl');
+    this.InputStationStatusUrl = document.querySelector(
+      '#InputStationStatusUrl',
+    );
   },
   bindEvents: function () {
-    this.Stations.onclick = this.switchStation.bind(this);
+    this.Stations.onclick = this.handleStationsClick.bind(this);
     this.StationHistory.onclick = this.searchYouTube.bind(this, 'history');
     this.ButtonToggleAudio.onclick = this.toggleAudio.bind(this);
     this.ButtonPrevStation.onclick = this.scrollStation.bind(this, -1);
@@ -138,6 +155,20 @@ const App = {
     this.ButtonHistoryNext.onclick = this.changeHistoryPage.bind(this, 1);
     this.SelectHistoryLimit.onchange = this.changeHistoryLimit.bind(this);
     this.ButtonSearchYouTube.onclick = this.searchYouTube.bind(this, 'player');
+
+    // Station Form Events
+    this.ButtonAddStation.onclick = this.openStationForm.bind(this, null);
+    this.ButtonCloseStationForm.onclick = this.switchView.bind(
+      this,
+      'stationForm',
+    );
+    this.StationForm.onsubmit = this.handleStationFormSubmit.bind(this);
+    this.ButtonDeleteStation.onclick = this.deleteStation.bind(this);
+
+    // Reordering
+    this.Stations.ondragstart = this.handleDragStart.bind(this);
+    this.Stations.ondragover = this.handleDragOver.bind(this);
+    this.Stations.ondragend = this.handleDragEnd.bind(this);
 
     this.audio.ontimeupdate = this.updateTime.bind(this);
     this.audio.onloadstart = this.handleBuffering.bind(this);
@@ -176,6 +207,7 @@ const App = {
     });
   },
   renderStations: function () {
+    this.Stations.innerHTML = '';
     this.stations.forEach((item) => {
       const el = document.importNode(this.ListItem.content, true);
       el.querySelector('li').setAttribute('data-id', item.id);
@@ -267,6 +299,9 @@ const App = {
       }
       window.history.replaceState({}, '', url);
     }
+    if (view === 'stationForm') {
+      this.ModalStationForm.classList.toggle('modal--open');
+    }
   },
   loadStations: function () {
     const stationsUpdated = localStorage.getItem('stations-updated');
@@ -330,6 +365,140 @@ const App = {
     const li = event.target.closest('li');
     const id = li.dataset.id;
     this.selectStation(id);
+  },
+  handleStationsClick: function (event) {
+    const editButton = event.target.closest('.list__item__edit');
+    if (editButton) {
+      const li = editButton.closest('li');
+      const id = li.dataset.id;
+      this.openStationForm(id);
+      return;
+    }
+    this.switchStation(event);
+  },
+  openStationForm: function (id = null) {
+    if (id !== null) {
+      const station = this.stations.find((s) => s.id === +id);
+      this.StationFormTitle.textContent = 'Edit Station';
+      this.InputStationId.value = station.id;
+      this.InputStationTitle.value = station.title;
+      this.InputStationImage.value = station.image;
+      this.InputStationUrl.value = station.url;
+      this.InputStationStatusUrl.value = station.statusUrl || '';
+      this.ButtonDeleteStation.style.display = 'block';
+    } else {
+      this.StationFormTitle.textContent = 'Add Station';
+      this.StationForm.reset();
+      this.InputStationId.value = '';
+      this.ButtonDeleteStation.style.display = 'none';
+    }
+    this.switchView('stationForm');
+  },
+  handleStationFormSubmit: function (event) {
+    event.preventDefault();
+    const id = this.InputStationId.value;
+    const stationData = {
+      title: this.InputStationTitle.value,
+      image: this.InputStationImage.value,
+      url: this.InputStationUrl.value,
+      statusUrl: this.InputStationStatusUrl.value || null,
+    };
+
+    if (id) {
+      const index = this.stations.findIndex((s) => s.id === +id);
+      this.stations[index] = { ...this.stations[index], ...stationData };
+    } else {
+      const newId =
+        this.stations.length > 0
+          ? Math.max(...this.stations.map((s) => s.id)) + 1
+          : 1;
+      this.stations.push({ id: newId, ...stationData });
+    }
+
+    this.saveStations();
+    this.renderStationsList();
+    this.switchView('stationForm');
+  },
+  deleteStation: function () {
+    const id = this.InputStationId.value;
+    if (!id) return;
+
+    if (confirm('Are you sure you want to delete this station?')) {
+      const currentStation = this.getStation();
+      this.stations = this.stations.filter((s) => s.id !== +id);
+      this.saveStations();
+      this.renderStationsList();
+      this.switchView('stationForm');
+
+      if (currentStation && currentStation.id === +id) {
+        if (this.stations.length > 0) {
+          this.selectStation(this.stations[0].id);
+        } else {
+          // No stations left, handle appropriately
+        }
+      }
+    }
+  },
+  saveStations: function () {
+    localStorage.setItem('stations', JSON.stringify(this.stations));
+  },
+  renderStationsList: function () {
+    this.Stations.innerHTML = '';
+    this.renderStations();
+  },
+  handleDragStart: (event) => {
+    const li = event.target.closest('li');
+    if (!li) return;
+    li.classList.add('dragging');
+    event.dataTransfer.setData('text/plain', li.dataset.id);
+    event.dataTransfer.effectAllowed = 'move';
+  },
+  handleDragOver: function (event) {
+    event.preventDefault();
+    const draggingElement = this.Stations.querySelector('.dragging');
+    const afterElement = this.getDragAfterElement(this.Stations, event.clientY);
+    if (afterElement == null) {
+      this.Stations.appendChild(draggingElement);
+    } else {
+      this.Stations.insertBefore(draggingElement, afterElement);
+    }
+  },
+  handleDragEnd: function (event) {
+    const li = event.target.closest('li');
+    if (!li) return;
+    li.classList.remove('dragging');
+
+    // Update stations array based on new order in DOM
+    const newStationsOrder = [];
+    const listItems = this.Stations.querySelectorAll('li');
+    listItems.forEach((item) => {
+      const id = +item.dataset.id;
+      const station = this.stations.find((s) => s.id === id);
+      if (station) {
+        newStationsOrder.push(station);
+      }
+    });
+
+    this.stations = newStationsOrder;
+    this.saveStations();
+  },
+  getDragAfterElement: (container, y) => {
+    const draggableElements = [
+      ...container.querySelectorAll('.list__item:not(.dragging)'),
+    ];
+
+    return draggableElements.reduce(
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      },
+      { offset: Number.NEGATIVE_INFINITY },
+    ).element;
   },
   scrollStation: function (direction) {
     const station = this.getStation();
@@ -435,7 +604,7 @@ const App = {
       return;
     }
 
-    const [result, error] = await tryCatch(this.fetchStationStatus(station));
+    const [result] = await tryCatch(this.fetchStationStatus(station));
 
     this.renderStationLoading(false);
 
@@ -597,7 +766,6 @@ const App = {
     const countRequest = index.count(keyRange);
     countRequest.onsuccess = () => {
       const totalCount = countRequest.result;
-      const totalPages = Math.ceil(totalCount / LIMIT);
       const start = totalCount === 0 ? 0 : (this.historyPage - 1) * LIMIT + 1;
       const end = Math.min(this.historyPage * LIMIT, totalCount);
 
@@ -660,7 +828,7 @@ const App = {
           if (this.historyPage === 1 && !forceRefresh) {
             while (this.StationHistory.children.length > LIMIT) {
               const lastChild = this.StationHistory.lastElementChild;
-              if (lastChild && lastChild.dataset.id) {
+              if (lastChild?.dataset.id) {
                 this.stationHistoryRendererSet.delete(+lastChild.dataset.id);
               }
               this.StationHistory.removeChild(lastChild);

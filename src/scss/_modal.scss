@@ -1,0 +1,58 @@
+@use 'variables';
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+
+  &.modal--open {
+    display: flex;
+  }
+}
+
+.modal__content {
+  background-color: var(--dialog-color);
+  backdrop-filter: saturate(180%) blur(30px);
+  // border: 1px solid var(--outline-color);
+  // border-radius: variables.$radius-medium;
+  width: 100%;
+  height: 100%;
+  // box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  animation: modal-fade-up 0.3s ease-out;
+}
+
+@keyframes modal-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--outline-color);
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+}
+
+.modal__body {
+  padding: 5px;
+}

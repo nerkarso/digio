@@ -91,3 +91,9 @@
   background-color: var(--dialog-color);
   backdrop-filter: saturate(180%) blur(30px);
 }
+
+.view__header__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
