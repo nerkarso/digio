@@ -11,7 +11,7 @@ const App = {
     vercel: 'https://ngxproxy.vercel.app/proxy/',
     local: 'http://localhost:8800/',
   },
-  stationsUpdated: '2025-05-15',
+  stationsUpdated: '2026-04-05',
   stations: [
     {
       id: 1,
@@ -19,6 +19,13 @@ const App = {
       image: '/img/stations/nio.jpg',
       url: 'https://niofm.beheerstream.nl:8060/stream?type=http&nocache=71',
       statusUrl: 'https://niofm.beheerstream.nl:8060/currentsong?sid=1',
+    },
+    {
+      id: 5,
+      title: 'Surinet Radio',
+      image: '/img/stations/surinet.jpg',
+      url: 'https://surinetradio.beheerstream.nl/8066/stream',
+      statusUrl: 'https://surinetradio.beheerstream.nl/8066/currentsong',
     },
     {
       id: 4,

@@ -60,9 +60,11 @@
   .image {
     height: 125px;
     width: 125px;
+    background-color: #fff;
     background-image: var(--image, url('/img/icons/icon-512x512.png'));
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
+    background-position: center;
     border-radius: variables.$radius-medium;
     position: relative;
   }
