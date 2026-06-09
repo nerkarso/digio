@@ -609,28 +609,33 @@ const App = {
     this.renderStationLoading(false);
 
     if (result) {
-      this.renderPlayer({
-        heading: station.title,
-        image: result.image || station.image,
-        title: result.title || station.title,
-      });
-
-      this.stationHistoryAdd({
-        title: result.title,
-        image: result.image || station.image,
-        stationId: station.id,
-      });
-
-      this.setDocumentTitle(result.title || station.title);
-
-      this.setMediaSession({
-        title: result.title || station.title,
-        artist: result.title ? station.title : undefined,
-        album: this.appName,
-        image: result.image || station.image,
-      });
-
-      return;
+      if (!result.title?.toLowerCase()?.includes('error')) {
+        const title = result.title || station.title;
+        const image = result.image || station.image;
+        
+        this.renderPlayer({
+          heading: station.title,
+          image: image,
+          title: title,
+        });
+        
+        this.stationHistoryAdd({
+          title: title,
+          image: image,
+          stationId: station.id,
+        });
+        
+        this.setDocumentTitle(title);
+        
+        this.setMediaSession({
+          title: title,
+          artist: result.title ? station.title : undefined,
+          album: this.appName,
+          image: image,
+        });
+        
+        return;
+      }
     }
 
     this.renderPlayer({
