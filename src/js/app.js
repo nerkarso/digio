@@ -717,7 +717,7 @@ const App = {
       timeoutSignal,
     ]);
 
-    const url = this.useProxy(`${this.trackMetadataUrl}?term=${encodeURIComponent(query)}`);
+    const url = `${this.trackMetadataUrl}?term=${encodeURIComponent(query)}`;
     const fetcher = fetch(url, { signal: combinedSignal });
 
     const result = await fetcher.then((res) => res.json());
