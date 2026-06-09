@@ -11,6 +11,7 @@ const App = {
     vercel: 'https://ngxproxy.vercel.app/proxy/',
     local: 'http://localhost:8800/',
   },
+  trackMetadataUrl: 'http://localhost:8803/api/tracks/search',
   stationsUpdated: '2026-04-05',
   stations: [
     {
@@ -614,9 +615,16 @@ const App = {
     this.renderStationLoading(false);
 
     if (result) {
-      if (!result.title?.toLowerCase()?.includes('error')) {
+      if (!(/(html|error)/i.test(result.title))) {
         const title = result.title || station.title;
-        const image = result.image || station.image;
+        let image = result.image || station.image;
+
+        if (!result.image) {
+          const [track] = await tryCatch(this.fetchTrackMetadata(result.title));
+          if (track) {
+            image = track.image || station.image;
+          }
+        }
         
         this.renderPlayer({
           heading: station.title,
@@ -700,6 +708,28 @@ const App = {
     if (this.loadStationStatusTimer) {
       clearInterval(this.loadStationStatusTimer);
     }
+  },
+  fetchTrackMetadata: async function (query) {
+    this.loadStationStatusController = new AbortController();
+    const timeoutSignal = AbortSignal.timeout(3000);
+    const combinedSignal = AbortSignal.any([
+      this.loadStationStatusController.signal,
+      timeoutSignal,
+    ]);
+
+    const url = this.useProxy(`${this.trackMetadataUrl}?term=${encodeURIComponent(query)}`);
+    const fetcher = fetch(url, { signal: combinedSignal });
+
+    const result = await fetcher.then((res) => res.json());
+    if (!result) throw new Error('No data');
+    if (!result?.data) throw new Error('No data');
+    if (!result?.data?.items?.length) throw new Error('No data');
+
+    return {
+      title: result?.data?.items?.[0]?.n,
+      artist: result?.data?.items?.[0]?.as?.join(', '),
+      image: result?.data?.items?.[0]?.ci?.[0]?.iu,
+    };
   },
   setDocumentTitle: (title) => {
     document.title = title;
