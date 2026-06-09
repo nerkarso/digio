@@ -6,7 +6,6 @@
 }
 
 .list__item {
-  cursor: pointer;
   display: grid;
   grid-template-columns: 50px 1fr;
   column-gap: 10px;
@@ -83,7 +82,11 @@
   grid-template-columns: 30px 50px 1fr 30px;
 }
 
-.list__item__edit {
+.list__item--with-actions {
+  grid-template-columns: 50px 1fr 30px;
+}
+
+.list__item__actions {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -96,4 +99,8 @@
     opacity: 1;
     color: var(--primary-color);
   }
+}
+
+.list__item--actionable {
+  cursor: pointer;
 }

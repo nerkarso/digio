@@ -87,7 +87,8 @@ const App = {
   },
   cacheDom: function () {
     // Templates
-    this.ListItem = document.querySelector('#ListItem');
+    this.StationItem = document.querySelector('#StationItem');
+    this.StationHistoryItem = document.querySelector('#StationHistoryItem');
 
     // Elements
     this.AudioVisualizer = document.querySelector('#AudioVisualizer');
@@ -135,7 +136,7 @@ const App = {
   },
   bindEvents: function () {
     this.Stations.onclick = this.handleStationsClick.bind(this);
-    this.StationHistory.onclick = this.searchYouTube.bind(this, 'history');
+    this.StationHistory.onclick = this.handleStationHistoryClick.bind(this);
     this.ButtonToggleAudio.onclick = this.toggleAudio.bind(this);
     this.ButtonPrevStation.onclick = this.scrollStation.bind(this, -1);
     this.ButtonNextStation.onclick = this.scrollStation.bind(this, 1);
@@ -209,7 +210,7 @@ const App = {
   renderStations: function () {
     this.Stations.innerHTML = '';
     this.stations.forEach((item) => {
-      const el = document.importNode(this.ListItem.content, true);
+      const el = document.importNode(this.StationItem.content, true);
       el.querySelector('li').setAttribute('data-id', item.id);
       el.querySelector('.image').src = item.image;
       el.querySelector('.title').textContent = item.title;
@@ -367,11 +368,15 @@ const App = {
     this.selectStation(id);
   },
   handleStationsClick: function (event) {
-    const editButton = event.target.closest('.list__item__edit');
-    if (editButton) {
-      const li = editButton.closest('li');
+    const buttons = event.target.closest('.list__item__actions');
+    if (buttons) {
+      const li = buttons.closest('li');
       const id = li.dataset.id;
-      this.openStationForm(id);
+      switch (event.target.dataset.action) {
+        case 'edit':
+          this.openStationForm(id);
+          break;
+      }
       return;
     }
     this.switchStation(event);
@@ -808,7 +813,7 @@ const App = {
         } else if (itemsToRender.length > 0) {
           for (let i = itemsToRender.length - 1; i >= 0; i--) {
             const item = itemsToRender[i];
-            const itemEl = document.importNode(this.ListItem.content, true);
+            const itemEl = document.importNode(this.StationHistoryItem.content, true);
             itemEl.querySelector('li').setAttribute('data-id', item.id);
             itemEl.querySelector('.image').src = item.image;
             itemEl.querySelector('.title').textContent = item.title;
@@ -842,6 +847,17 @@ const App = {
         }
       }
     };
+  },
+  handleStationHistoryClick: function (event) {
+    const buttons = event.target.closest('.list__item__actions');
+    if (buttons) {
+      switch (event.target.dataset.action) {
+        case 'youtube':
+          this.searchYouTube('history', event);
+          break;
+      }
+      return;
+    }
   },
   initDb: function () {
     this.dbRequest = window.indexedDB.open(

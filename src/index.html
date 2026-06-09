@@ -281,8 +281,8 @@
       </button>
     </div>
 
-    <template id="ListItem">
-      <li class="list__item list__item--with-handle" draggable="true">
+    <template id="StationItem">
+      <li class="list__item list__item--with-handle list__item--actionable" draggable="true">
         <div class="list__item__drag-handle">
           <i class="ti ti-menu-2"></i>
         </div>
@@ -291,8 +291,21 @@
           <span class="list__item__title title"></span>
           <span class="list__item__subtitle subtitle"></span>
         </div>
-        <div class="list__item__edit" title="Edit station">
-          <i class="ti ti-pencil"></i>
+        <div class="list__item__actions">
+          <i class="ti ti-pencil" data-action="edit" title="Edit station"></i>
+        </div>
+      </li>
+    </template>
+
+    <template id="StationHistoryItem">
+      <li class="list__item list__item--with-actions">
+        <img src="" class="list__item__image image" alt="" />
+        <div class="list__item__content">
+          <span class="list__item__title title"></span>
+          <span class="list__item__subtitle subtitle"></span>
+        </div>
+        <div class="list__item__actions">
+          <i class="ti ti-brand-youtube" data-action="youtube" title="Search song on YouTube"></i>
         </div>
       </li>
     </template>

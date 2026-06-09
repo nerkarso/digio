@@ -19,7 +19,6 @@ body {
   display: flex;
   position: relative;
   overflow: hidden;
-  user-select: none;
 
   &::before,
   &::after {
