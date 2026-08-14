@@ -4,6 +4,7 @@
   "description": "Listen to your favorite Surinamese radio stations from anywhere",
   "start_url": ".",
   "display": "standalone",
+  "display_override": ["window-controls-overlay"],
   "theme_color": "#fc2c54",
   "background_color": "#fc2c54",
   "icons": [
