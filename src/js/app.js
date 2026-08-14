@@ -65,9 +65,49 @@ const App = {
   historyPage: 1,
   historyLimit: 20,
   currentImage: null,
+  options: {},
+  optionDefs: [
+    {
+      key: 'historyLimit',
+      param: 'history-limit',
+      storageKey: 'option-history-limit',
+      type: 'number',
+      default: 20,
+    },
+    {
+      key: 'autoplay',
+      param: 'autoplay',
+      storageKey: 'option-autoplay',
+      type: 'boolean',
+      default: false,
+    },
+    {
+      key: 'sidebarOpen',
+      param: 'sidebar',
+      storageKey: 'option-sidebar-open',
+      type: 'boolean',
+      default: false,
+      trueValue: 'open',
+    },
+    {
+      key: 'miniMode',
+      param: 'mode',
+      storageKey: 'option-mini-mode',
+      type: 'boolean',
+      default: false,
+      trueValue: 'mini',
+    },
+    {
+      key: 'proxy',
+      param: 'proxy',
+      storageKey: 'option-proxy',
+      type: 'string',
+      default: '',
+    },
+  ],
   init: function () {
-    const searchParams = new URLSearchParams(window.location.search);
-    this.historyLimit = +searchParams.get('history-limit') || 20;
+    this.loadOptions();
+    this.historyLimit = this.options.historyLimit;
 
     this.initDb();
     this.cacheDom();
@@ -85,6 +125,40 @@ const App = {
     this.renderStationHistoryEmptyItem();
     this.startStationStatusTimer();
     this.applyUrlState();
+  },
+  loadOptions: function () {
+    const searchParams = new URLSearchParams(window.location.search);
+    this.options = {};
+
+    this.optionDefs.forEach((def) => {
+      const rawParam = searchParams.get(def.param);
+
+      if (rawParam !== null) {
+        const value = this.parseOptionValue(def, rawParam);
+        this.options[def.key] = value;
+        localStorage.setItem(def.storageKey, JSON.stringify(value));
+      } else {
+        const stored = localStorage.getItem(def.storageKey);
+        this.options[def.key] =
+          stored !== null ? JSON.parse(stored) : def.default;
+      }
+    });
+  },
+  parseOptionValue: function (def, rawValue) {
+    switch (def.type) {
+      case 'number':
+        return +rawValue || def.default;
+      case 'boolean':
+        return def.trueValue ? rawValue === def.trueValue : rawValue === 'true';
+      default:
+        return rawValue;
+    }
+  },
+  saveOption: function (key, value) {
+    const def = this.optionDefs.find((item) => item.key === key);
+    if (!def) return;
+    this.options[key] = value;
+    localStorage.setItem(def.storageKey, JSON.stringify(value));
   },
   cacheDom: function () {
     // Templates
@@ -134,6 +208,25 @@ const App = {
     this.InputStationStatusUrl = document.querySelector(
       '#InputStationStatusUrl',
     );
+
+    // Settings Form
+    this.ModalSettings = document.querySelector('#ModalSettings');
+    this.SettingsForm = document.querySelector('#SettingsForm');
+    this.ButtonSettings = document.querySelector('#ButtonSettings');
+    this.ButtonCloseSettings = document.querySelector('#ButtonCloseSettings');
+    this.SelectSettingsHistoryLimit = document.querySelector(
+      '#SelectSettingsHistoryLimit',
+    );
+    this.SelectSettingsProxy = document.querySelector('#SelectSettingsProxy');
+    this.InputSettingsAutoplay = document.querySelector(
+      '#InputSettingsAutoplay',
+    );
+    this.InputSettingsSidebarOpen = document.querySelector(
+      '#InputSettingsSidebarOpen',
+    );
+    this.InputSettingsMiniMode = document.querySelector(
+      '#InputSettingsMiniMode',
+    );
   },
   bindEvents: function () {
     this.Stations.onclick = this.handleStationsClick.bind(this);
@@ -166,6 +259,11 @@ const App = {
     );
     this.StationForm.onsubmit = this.handleStationFormSubmit.bind(this);
     this.ButtonDeleteStation.onclick = this.deleteStation.bind(this);
+
+    // Settings Form Events
+    this.ButtonSettings.onclick = this.openSettingsForm.bind(this);
+    this.ButtonCloseSettings.onclick = this.switchView.bind(this, 'settings');
+    this.SettingsForm.onsubmit = this.handleSettingsFormSubmit.bind(this);
 
     // Reordering
     this.Stations.ondragstart = this.handleDragStart.bind(this);
@@ -250,27 +348,22 @@ const App = {
     }
   },
   applyUrlState: function () {
-    const searchParams = new URLSearchParams(window.location.search);
-    const autoplay = searchParams.get('autoplay');
-    const sidebar = searchParams.get('sidebar');
-    const mode = searchParams.get('mode');
-    if (autoplay === 'true') {
+    if (this.options.autoplay) {
       this.isPlaying = true;
       this.playAudio().catch(() => {
         this.isPlaying = false;
         this.stopAudio();
       });
     }
-    if (sidebar === 'open') {
+    if (this.options.sidebarOpen) {
       this.Shell.classList.add('shell--sidebar-open');
     }
-    if (mode === 'mini') {
+    if (this.options.miniMode) {
       this.ViewPlayer.classList.add('player--mini');
     }
   },
   useProxy: function (url) {
-    const searchParams = new URLSearchParams(window.location.search);
-    const proxyName = searchParams.get('proxy');
+    const proxyName = this.options.proxy;
     if (proxyName) {
       const proxyUrl = this.proxies[proxyName];
       if (proxyUrl) {
@@ -303,6 +396,9 @@ const App = {
     }
     if (view === 'stationForm') {
       this.ModalStationForm.classList.toggle('modal--open');
+    }
+    if (view === 'settings') {
+      this.ModalSettings.classList.toggle('modal--open');
     }
   },
   loadStations: function () {
@@ -447,6 +543,33 @@ const App = {
   },
   saveStations: function () {
     localStorage.setItem('stations', JSON.stringify(this.stations));
+  },
+  openSettingsForm: function () {
+    this.SelectSettingsHistoryLimit.value = this.options.historyLimit;
+    this.SelectSettingsProxy.value = this.options.proxy;
+    this.InputSettingsAutoplay.checked = this.options.autoplay;
+    this.InputSettingsSidebarOpen.checked = this.options.sidebarOpen;
+    this.InputSettingsMiniMode.checked = this.options.miniMode;
+
+    this.switchView('settings');
+  },
+  handleSettingsFormSubmit: function (event) {
+    event.preventDefault();
+
+    this.saveOption('historyLimit', +this.SelectSettingsHistoryLimit.value);
+    this.saveOption('proxy', this.SelectSettingsProxy.value);
+    this.saveOption('autoplay', this.InputSettingsAutoplay.checked);
+    this.saveOption('sidebarOpen', this.InputSettingsSidebarOpen.checked);
+    this.saveOption('miniMode', this.InputSettingsMiniMode.checked);
+
+    this.historyLimit = this.options.historyLimit;
+    this.historyPage = 1;
+    if (this.SelectHistoryLimit) {
+      this.SelectHistoryLimit.value = this.historyLimit;
+    }
+    this.renderStationHistory(true);
+
+    this.switchView('settings');
   },
   renderStationsList: function () {
     this.Stations.innerHTML = '';
@@ -779,6 +902,7 @@ const App = {
   },
   changeHistoryLimit: function (event) {
     this.historyLimit = +event.target.value;
+    this.saveOption('historyLimit', this.historyLimit);
     this.historyPage = 1;
 
     const url = new URL(window.location.href);

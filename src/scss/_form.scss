@@ -13,6 +13,18 @@
   gap: 5px;
 }
 
+.form__group--checkbox {
+  flex-direction: row;
+  align-items: center;
+
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 1;
+  }
+}
+
 .label {
   font-size: 14px;
   font-weight: 600;

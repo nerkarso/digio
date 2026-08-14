@@ -54,7 +54,16 @@
           <div class="view__content">
             <div class="player">
               <div class="player__header">
+                <span></span>
                 <h4 class="player__heading heading"></h4>
+                <button
+                  type="button"
+                  id="ButtonSettings"
+                  class="button button--icon button--round button--small"
+                  title="Settings"
+                >
+                  <i class="ti ti-settings"></i>
+                </button>
               </div>
               <div class="player__image">
                 <div class="image"></div>
@@ -215,6 +224,69 @@
                   style="display: none"
                 >
                   Delete
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="ModalSettings" class="modal">
+        <div class="modal__content">
+          <header class="modal__header">
+            <h2>Settings</h2>
+            <button
+              type="button"
+              id="ButtonCloseSettings"
+              class="button button--icon button--round button--small"
+              title="Close"
+            >
+              <i class="ti ti-x"></i>
+            </button>
+          </header>
+          <div class="modal__body">
+            <form id="SettingsForm" class="form">
+              <div class="form__group">
+                <label for="SelectSettingsHistoryLimit" class="label"
+                  >History items per page</label
+                >
+                <select id="SelectSettingsHistoryLimit" class="select">
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <div class="form__group">
+                <label for="SelectSettingsProxy" class="label">Proxy</label>
+                <select id="SelectSettingsProxy" class="select">
+                  <option value="">Default</option>
+                  <option value="render">Render</option>
+                  <option value="vercel">Vercel</option>
+                  <option value="local">Local</option>
+                </select>
+              </div>
+              <div class="form__group form__group--checkbox">
+                <label for="InputSettingsAutoplay" class="label">
+                  <input type="checkbox" id="InputSettingsAutoplay" />
+                  Autoplay on load
+                </label>
+              </div>
+              <div class="form__group form__group--checkbox">
+                <label for="InputSettingsSidebarOpen" class="label">
+                  <input type="checkbox" id="InputSettingsSidebarOpen" />
+                  Open station history by default
+                </label>
+              </div>
+              <div class="form__group form__group--checkbox">
+                <label for="InputSettingsMiniMode" class="label">
+                  <input type="checkbox" id="InputSettingsMiniMode" />
+                  Open in mini mode by default
+                </label>
+              </div>
+              <div class="form__actions">
+                <button type="submit" class="button button--primary">
+                  Save
                 </button>
               </div>
             </form>

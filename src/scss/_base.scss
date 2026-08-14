@@ -23,11 +23,11 @@ body {
   &::before,
   &::after {
     content: '';
-    position: absolute;
-    width: 200vmax;
-    height: 200vmax;
-    top: -100vmax;
-    left: -100vmax;
+    position: fixed;
+    width: 100vmax;
+    height: 100vmax;
+    bottom: -50vmax;
+    right: -25vmax;
     background-image: radial-gradient(
       circle,
       var(--body-bg-color, var(--primary-darker-color)) 0%,
